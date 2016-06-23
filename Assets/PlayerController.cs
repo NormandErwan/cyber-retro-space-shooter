@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void Update () {
+		// Discrete or continuous fire
 		if (Input.GetKeyUp(KeyCode.Space) || (Input.GetKey(KeyCode.Space) && Time.time > lastFire+weaponFireRate)) {
 			weapon.Fire();
 			lastFire = Time.time + weaponFireRate;
