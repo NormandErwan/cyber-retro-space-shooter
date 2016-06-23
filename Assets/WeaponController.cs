@@ -7,6 +7,9 @@ public class WeaponController : MonoBehaviour {
 
 	public float munitionFireForce = 500f;
 
+	/**
+	 * Instantiate with a force a munition in the direction of the weapon. 
+	 */
 	public void Fire () {
 		GameObject concreteMunition = Instantiate (munition);
 		concreteMunition.transform.position = transform.position;

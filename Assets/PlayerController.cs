@@ -13,9 +13,17 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void Update () {
-		// Discrete or continuous fire
-		if (Input.GetKeyDown(KeyCode.Space) || (Input.GetKey(KeyCode.Space) && Time.time > nextFire)) {
-			weapon.Fire();
+		WeaponFire ();
+	}
+
+	/*
+	 * Fire with the weapon when the user requests it.
+	 */
+	void WeaponFire () {
+		if (Input.GetKeyDown (KeyCode.Space) // Discrete fire
+			|| (Input.GetKey (KeyCode.Space) && Time.time > nextFire)) // Continuous fire
+		{
+			weapon.Fire ();
 			nextFire = Time.time + weaponFireRate;
 		}
 	}
