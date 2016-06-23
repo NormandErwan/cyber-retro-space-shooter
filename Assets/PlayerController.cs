@@ -6,17 +6,17 @@ public class PlayerController : MonoBehaviour {
 	public WeaponController weapon = null;
 	public float weaponFireRate = 0.1f;
 
-	private float lastFire;
+	private float nextFire;
 
 	void Start () {
-		lastFire = Time.time;
+		nextFire = weaponFireRate;
 	}
 
 	void Update () {
 		// Discrete or continuous fire
-		if (Input.GetKeyUp(KeyCode.Space) || (Input.GetKey(KeyCode.Space) && Time.time > lastFire+weaponFireRate)) {
+		if (Input.GetKeyDown(KeyCode.Space) || (Input.GetKey(KeyCode.Space) && Time.time > nextFire)) {
 			weapon.Fire();
-			lastFire = Time.time + weaponFireRate;
+			nextFire = Time.time + weaponFireRate;
 		}
 	}
 }
