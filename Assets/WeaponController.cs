@@ -10,6 +10,7 @@ public class WeaponController : MonoBehaviour {
 	public void Fire () {
 		GameObject concreteMunition = Instantiate (munition);
 		concreteMunition.transform.position = transform.position;
+		concreteMunition.transform.rotation = transform.rotation;
 		concreteMunition.GetComponent<Rigidbody> ().AddForce (transform.forward * munitionFireForce);
 	}
 }
