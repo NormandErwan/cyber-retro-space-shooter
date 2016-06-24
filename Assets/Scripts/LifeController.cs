@@ -3,7 +3,7 @@ using System.Collections;
 
 public class LifeController : MonoBehaviour {
 
-	public float lifePoints = 1.0f;
+	public float lifePoints = 1f;
 
 	public void Hit (float damageAmount) {
 		lifePoints -= damageAmount;

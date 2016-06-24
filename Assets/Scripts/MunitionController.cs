@@ -3,7 +3,8 @@ using System.Collections;
 
 public class MunitionController : MonoBehaviour {
 
-	public float damageFactor = 1.0f;
+	public float damageFactor = 1f;
+	public float fireForce = 100f;
 
 	void OnCollisionEnter (Collision colision) {
 		Debug.Log (colision.gameObject.name);
