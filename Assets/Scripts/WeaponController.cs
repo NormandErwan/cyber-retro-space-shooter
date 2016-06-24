@@ -9,11 +9,9 @@ public class WeaponController : MonoBehaviour {
 	 * Instantiate with a force a munition in the direction of the weapon. 
 	 */
 	public void Fire () {
-		GameObject concreteMunition = Instantiate (munition);
-		concreteMunition.transform.position = transform.position;
-		concreteMunition.transform.rotation = transform.rotation;
+		GameObject concreteMunition = Instantiate (munition, transform.position, transform.rotation) as GameObject;
 
-		float munitionFireForce = concreteMunition.GetComponent<MunitionController> ().fireForce;
-		concreteMunition.GetComponent<Rigidbody> ().AddForce (transform.forward * munitionFireForce);
+		Vector3 munitionFireForce = transform.forward * concreteMunition.GetComponent<MunitionController> ().fireForce;
+		concreteMunition.GetComponent<Rigidbody> ().AddForce (munitionFireForce);
 	}
 }
