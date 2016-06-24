@@ -14,7 +14,7 @@ public class WorldBorders : MonoBehaviour {
 	 * Constraint every object visible by the player in the box, by translating objects at the other side when they 
 	 * exit the box.
 	 */
-	void OnTriggerExit(Collider other) {
+	void OnTriggerExit (Collider other) {
 		if (other.tag == "FollowWorldBorders") {
 			Vector3 translation = new Vector3 (0, 0, 0);
 			Vector3 otherPosition = other.transform.position;
