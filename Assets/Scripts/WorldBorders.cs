@@ -6,6 +6,13 @@ public class WorldBorders : MonoBehaviour {
 	private Vector3 bordersMin, bordersMax;
 
 	void Start () {
+		SetBorders ();
+	}
+
+	/*
+	 * Set the world borders following the position and the scale of the object.
+	 */
+	void SetBorders () {
 		bordersMin = - transform.localScale / 2 + transform.position;
 		bordersMax = transform.localScale / 2 + transform.position;
 	}

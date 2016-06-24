@@ -6,8 +6,10 @@ public class MunitionController : MonoBehaviour {
 	public float damageFactor = 1f;
 	public float fireForce = 100f;
 
+	/*
+	 * Hit every object with a LifeController and inflict damages.
+	 */
 	void OnCollisionEnter (Collision colision) {
-		Debug.Log (colision.gameObject.name);
 		LifeController otherLife = colision.gameObject.GetComponent<LifeController> ();
 		if (otherLife != null) {
 			otherLife.Hit (damageFactor);
