@@ -21,7 +21,7 @@ public class LifeController : MonoBehaviour {
 	}
 
 	/*
-	 * 
+	 * The shield takes the damages, then the life. If both drops to zero, destroy the object.
 	 */
 	public void Hit (float damageAmount) {
 		lastHitTime = Time.time;
@@ -38,7 +38,7 @@ public class LifeController : MonoBehaviour {
 	}
 
 	/*
-	 * 
+	 * After a 'shieldRechargeDelay', recharge the shield at a shield rate. Should be called every frame by Update().
 	 */
 	void RechargeShield () {
 		if (shieldPoints == shieldCapacity || lastHitTime + shieldRechargeDelay > Time.time) {
