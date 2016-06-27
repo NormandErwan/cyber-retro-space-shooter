@@ -29,7 +29,7 @@ public class PlayerController : ShipController {
 	 */
 	protected override void LifeObserver () {
 		HUDInfos.text = "Life: " + life.LifePoints.ToString("F1") + " Shield: " + life.ShieldPoints.ToString("F1") + " (Player)";
-		if (life.LifePoints <= 0) {
+		if (life.LifePoints == 0) {
 			Debug.Log ("Game Over");
 		}
 	}

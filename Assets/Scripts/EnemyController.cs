@@ -24,7 +24,7 @@ public class EnemyController : ShipController {
 	 */
 	protected override void LifeObserver () {
 		HUDInfos.text = "Life: " + life.LifePoints.ToString("F1") + " Shield: " + life.ShieldPoints.ToString("F1") + " (Enemy)";
-		if (life.LifePoints <= 0) {
+		if (life.LifePoints == 0) {
 			Destroy (gameObject);
 		}
 	}

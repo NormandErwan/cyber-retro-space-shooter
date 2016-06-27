@@ -54,7 +54,7 @@ public class LifeController : MonoBehaviour {
 	 * Reduce shield points, then life points according to the damage amount of the hit, and notify the observer.
 	 */
 	public void Hit (float damageAmount) {
-		if (lifePoints <= 0f) { // The observer has already been informed
+		if (lifePoints == 0) { // The observer has already been informed
 			return;
 		}
 
@@ -62,7 +62,7 @@ public class LifeController : MonoBehaviour {
 
 		// Reduce shield points or life points
 		float shieldDamages = Mathf.Min(shieldPoints, damageAmount);
-		float lifeDamages = damageAmount - shieldDamages;
+		float lifeDamages = Mathf.Min(lifePoints, damageAmount - shieldDamages);
 		shieldPoints -= shieldDamages;
 		lifePoints -= lifeDamages;
 
@@ -73,7 +73,7 @@ public class LifeController : MonoBehaviour {
 	 * After a 'shieldRechargeDelay', recharge the shield at a shield rate. Should be called every frame by Update().
 	 */
 	void RechargeShield () {
-		if (lifePoints <= 0f || shieldPoints == shieldCapacity || lastHitTime + shieldRechargeDelay > Time.time) {
+		if (lifePoints == 0 || shieldPoints == shieldCapacity || lastHitTime + shieldRechargeDelay > Time.time) {
 			return;
 		}
 
