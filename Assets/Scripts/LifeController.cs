@@ -51,7 +51,7 @@ public class LifeController : MonoBehaviour {
 	}
 
 	/*
-	 * Reduce shield points, then life points according to the damage amount of the hit, and inform the observer.
+	 * Reduce shield points, then life points according to the damage amount of the hit, and notify the observer.
 	 */
 	public void Hit (float damageAmount) {
 		if (lifePoints <= 0f) { // The observer has already been informed
@@ -66,11 +66,7 @@ public class LifeController : MonoBehaviour {
 		shieldPoints -= shieldDamages;
 		lifePoints -= lifeDamages;
 
-		if (observer == null) {
-			Debug.LogError (name + " (LifeController): no observer has been set.");
-		} else {
-			observer.Invoke ();
-		}
+		NotifyObserver ();
 	}
 
 	/*
@@ -83,5 +79,18 @@ public class LifeController : MonoBehaviour {
 
 		shieldPoints += shieldRechargeRatePerSecond * Time.deltaTime;
 		shieldPoints = Mathf.Clamp(shieldPoints, 0f, shieldCapacity);
+
+		NotifyObserver ();
+	}
+
+	/*
+	 * Notify the observer.
+	 */
+	void NotifyObserver () {
+		if (observer == null) {
+			Debug.LogError (name + " (LifeController): no observer has been set.");
+		} else {
+			observer.Invoke ();
+		}
 	}
 }

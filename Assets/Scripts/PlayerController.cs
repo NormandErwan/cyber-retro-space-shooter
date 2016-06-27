@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 
@@ -7,13 +8,16 @@ public class PlayerController : MonoBehaviour {
 	public LifeController life;
 	public WeaponController weapon;
 	public EngineController engine;
+	public Text HUDInfos;
 
 	private UnityEvent lifeEvents;
 
 	void Start () {
 		lifeEvents = new UnityEvent();
-		lifeEvents.AddListener (LifeEvent);
+		lifeEvents.AddListener (LifeObserver);
 		life.AddObserver (lifeEvents);
+
+		LifeObserver(); // Init the player's infos in the HUD
 	}
 
 	void Update () {
@@ -37,17 +41,17 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	/*
-	 * 
+	 * Move the player.
 	 */
 	void Move () {
 		engine.Move ();
 	}
 
 	/*
-	 * 
+	 * Manage the notifications of the LifeController.
 	 */
-	void LifeEvent () {
-		Debug.Log ("lifeevent " + life.ShieldPoints + " " + life.LifePoints);
+	void LifeObserver () {
+		HUDInfos.text = "Life: " + life.LifePoints + " Shield: " + life.ShieldPoints.ToString("F1");
 		if (life.LifePoints <= 0) {
 			Debug.Log ("Game Over");
 		}
