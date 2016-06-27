@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour {
 
 	void Start () {
 		lifeEvents = new UnityEvent();
-		lifeEvents.AddListener (Dead);
+		lifeEvents.AddListener (LifeEvent);
 		life.AddObserver (lifeEvents);
 	}
 
@@ -46,7 +46,10 @@ public class PlayerController : MonoBehaviour {
 	/*
 	 * 
 	 */
-	void Dead () {
-		Debug.Log ("Game Over");
+	void LifeEvent () {
+		Debug.Log ("lifeevent " + life.ShieldPoints + " " + life.LifePoints);
+		if (life.LifePoints <= 0) {
+			Debug.Log ("Game Over");
+		}
 	}
 }

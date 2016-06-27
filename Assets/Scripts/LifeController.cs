@@ -4,18 +4,20 @@ using System.Collections;
 
 public class LifeController : MonoBehaviour {
 
-	public float lifePoints = 1f;
+	public float lifeCapacity = 1f;
 
 	public float shieldCapacity = 1f;
 	public float shieldRechargeDelay = 1f;
 	public float shieldRechargeRatePerSecond = 0.1f;
 
+	private float lifePoints;
+	private float shieldPoints;
 	private float lastHitTime = 0f;
-	private float shieldPoints = 1f;
 
 	private UnityEvent observer;
 
 	void Start () {
+		lifePoints = lifeCapacity;
 		shieldPoints = shieldCapacity;
 	}
 
@@ -24,14 +26,32 @@ public class LifeController : MonoBehaviour {
 	}
 
 	/*
-	 * Add an observer which be notified if the life drops to zero.
+	 * Life points getter.
+	 */
+	public float LifePoints {
+		get {
+			return lifePoints;
+		}
+	}
+
+	/*
+	 * Shield points getter.
+	 */
+	public float ShieldPoints {
+		get {
+			return shieldPoints;
+		}
+	}
+
+	/*
+	 * Add an observer which be notified of every hit.
 	 */
 	public void AddObserver (UnityEvent observer) {
 		this.observer = observer;
 	}
 
 	/*
-	 * The shield takes the damages, then the life. If life drops to zero, inform the observer.
+	 * Reduce shield points, then life points according to the damage amount of the hit, and inform the observer.
 	 */
 	public void Hit (float damageAmount) {
 		if (lifePoints <= 0f) { // The observer has already been informed
@@ -47,13 +67,10 @@ public class LifeController : MonoBehaviour {
 		}
 		lifePoints -= damageAmount;
 
-		// Inform the observer if life drops to zero
-		if (lifePoints <= 0f) {
-			if (observer != null) {
-				Debug.LogError (name + " (LifeController): no observer has been set.");
-			} else {
-				observer.Invoke ();
-			}
+		if (observer != null) {
+			Debug.LogError (name + " (LifeController): no observer has been set.");
+		} else {
+			observer.Invoke ();
 		}
 	}
 
