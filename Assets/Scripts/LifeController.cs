@@ -61,13 +61,12 @@ public class LifeController : MonoBehaviour {
 		lastHitTime = Time.time;
 
 		// Reduce shield points or life points
-		if (shieldPoints > 0) {
-			shieldPoints -= damageAmount;
-			return;
-		}
-		lifePoints -= damageAmount;
+		float shieldDamages = Mathf.Min(shieldPoints, damageAmount);
+		float lifeDamages = damageAmount - shieldDamages;
+		shieldPoints -= shieldDamages;
+		lifePoints -= lifeDamages;
 
-		if (observer != null) {
+		if (observer == null) {
 			Debug.LogError (name + " (LifeController): no observer has been set.");
 		} else {
 			observer.Invoke ();
