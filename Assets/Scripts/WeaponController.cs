@@ -32,7 +32,7 @@ public class WeaponController : MonoBehaviour {
 	void Fire () {
 		GameObject concreteMunition = Instantiate (munition, transform.position, transform.rotation) as GameObject;
 
-		Vector3 munitionFireForce = transform.forward * concreteMunition.GetComponent<MunitionController> ().fireForce;
-		concreteMunition.GetComponent<Rigidbody> ().AddForce (munitionFireForce);
+		Vector3 munitionFireForce = transform.forward * concreteMunition.GetComponent<MunitionController> ().fireVelocity;
+		concreteMunition.GetComponent<Rigidbody> ().AddForce (munitionFireForce, ForceMode.VelocityChange);
 	}
 }

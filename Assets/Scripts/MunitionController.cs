@@ -4,7 +4,7 @@ using System.Collections;
 public class MunitionController : MonoBehaviour {
 
 	public float damageFactor = 1f;
-	public float fireForce = 100f;
+	public float fireVelocity = 5f;
 	public float destroyBelowVelocity = 1f;
 
 	void FixedUpdate () {
@@ -30,6 +30,6 @@ public class MunitionController : MonoBehaviour {
 		if (otherLife != null) {
 			otherLife.Hit (damageFactor);
 		}
-		Destroy (this.gameObject);
+		Destroy (gameObject);
 	}
 }
