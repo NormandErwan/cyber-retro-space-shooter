@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using System.Collections;
 
 public class LifeController : MonoBehaviour {
@@ -12,6 +13,8 @@ public class LifeController : MonoBehaviour {
 	private float lastHitTime = 0f;
 	private float shieldPoints = 1f;
 
+	private UnityEvent observer;
+
 	void Start () {
 		shieldPoints = shieldCapacity;
 	}
@@ -21,7 +24,14 @@ public class LifeController : MonoBehaviour {
 	}
 
 	/*
-	 * The shield takes the damages, then the life. If both drops to zero, destroy the object.
+	 * Add an observer which be notified if the life drops to zero.
+	 */
+	public void AddObserver (UnityEvent observer) {
+		this.observer = observer;
+	}
+
+	/*
+	 * The shield takes the damages, then the life. If life drops to zero, inform the observer.
 	 */
 	public void Hit (float damageAmount) {
 		lastHitTime = Time.time;
@@ -33,7 +43,11 @@ public class LifeController : MonoBehaviour {
 		lifePoints -= damageAmount;
 
 		if (lifePoints <= 0f) {
-			Destroy (this.gameObject);
+			if (observer != null) {
+				Debug.LogError (name + " (LifeController): no observer set.";
+			} else {
+				observer.Invoke ();
+			}
 		}
 	}
 

@@ -1,10 +1,20 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
+	public LifeController life;
 	public WeaponController weapon;
 	public EngineController engine;
+
+	private UnityEvent lifeEvents;
+
+	void Start () {
+		lifeEvents = new UnityEvent();
+		lifeEvents.AddListener (Dead);
+		life.AddObserver (lifeEvents);
+	}
 
 	void Update () {
 		WeaponFire ();
@@ -26,7 +36,17 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
+	/*
+	 * 
+	 */
 	void Move () {
 		engine.Move ();
+	}
+
+	/*
+	 * 
+	 */
+	void Dead () {
+		Debug.Log ("Game Over");
 	}
 }
