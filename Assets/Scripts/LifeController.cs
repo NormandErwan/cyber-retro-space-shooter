@@ -34,17 +34,23 @@ public class LifeController : MonoBehaviour {
 	 * The shield takes the damages, then the life. If life drops to zero, inform the observer.
 	 */
 	public void Hit (float damageAmount) {
+		if (lifePoints <= 0f) { // The observer has already been informed
+			return;
+		}
+
 		lastHitTime = Time.time;
 
+		// Reduce shield points or life points
 		if (shieldPoints > 0) {
 			shieldPoints -= damageAmount;
 			return;
 		}
 		lifePoints -= damageAmount;
 
+		// Inform the observer if life drops to zero
 		if (lifePoints <= 0f) {
 			if (observer != null) {
-				Debug.LogError (name + " (LifeController): no observer set.";
+				Debug.LogError (name + " (LifeController): no observer has been set.");
 			} else {
 				observer.Invoke ();
 			}
@@ -55,7 +61,7 @@ public class LifeController : MonoBehaviour {
 	 * After a 'shieldRechargeDelay', recharge the shield at a shield rate. Should be called every frame by Update().
 	 */
 	void RechargeShield () {
-		if (shieldPoints == shieldCapacity || lastHitTime + shieldRechargeDelay > Time.time) {
+		if (lifePoints <= 0f || shieldPoints == shieldCapacity || lastHitTime + shieldRechargeDelay > Time.time) {
 			return;
 		}
 
