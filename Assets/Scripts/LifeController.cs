@@ -16,7 +16,7 @@ public class LifeController : MonoBehaviour {
 
 	private UnityEvent observer;
 
-	void Start () {
+	void Awake () {
 		lifePoints = lifeCapacity;
 		shieldPoints = shieldCapacity;
 	}
