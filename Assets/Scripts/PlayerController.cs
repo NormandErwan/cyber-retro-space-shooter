@@ -3,10 +3,15 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
-	public WeaponController weapon = null;
+	public WeaponController weapon;
+	public EngineController engine;
 
 	void Update () {
 		WeaponFire ();
+	}
+
+	void FixedUpdate () {
+		Move ();
 	}
 
 	/*
@@ -19,5 +24,9 @@ public class PlayerController : MonoBehaviour {
 		else if (Input.GetKey (KeyCode.Space)) {
 			weapon.ContinuousFire ();
 		}
+	}
+
+	void Move () {
+		engine.Move ();
 	}
 }
