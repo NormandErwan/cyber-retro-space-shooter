@@ -29,9 +29,8 @@ public class LifeController : MonoBehaviour {
 	 * Life points getter.
 	 */
 	public float LifePoints {
-		get {
-			return lifePoints;
-		}
+		get { return lifePoints; }
+		set { lifePoints = value; }
 	}
 
 	/*

@@ -7,11 +7,11 @@ public class EngineController : MonoBehaviour {
 
 	private float speed;
 
-	void Start () {
+	void Awake () {
 		SetupSpeed ();
 	}
 
-	public void AjustSpeed (float speedPercentage) {
+	public void AdjustSpeed (float speedPercentage) {
 		if (speedPercentage < 0 || speedPercentage > 100) {
 			Debug.LogError (name + " (EngineController::AjustSpeed): speedPercentage should be set within the interval of 0 to 100.");
 			return;
