@@ -8,6 +8,7 @@ public class WorldBorders : MonoBehaviour {
 	public RenderTexture cameraBorderTextureModel;
 
 	private Vector3 bordersMin, bordersMax;
+	private int cameraBorderLayerMask;
 
 	private class Border {
 		public string name;
@@ -34,6 +35,7 @@ public class WorldBorders : MonoBehaviour {
 	};
 
 	void Start () {
+		cameraBorderLayerMask = LayerMask.GetMask ("SpaceObjects");
 		SetupBorders ();
 	}
 
@@ -45,13 +47,13 @@ public class WorldBorders : MonoBehaviour {
 		bordersMin = - transform.localScale / 2 + transform.position;
 		bordersMax = transform.localScale / 2 + transform.position;
 
-		// Setup the box 
+		// Setup each border and each camera of the box
 		GameObject cameraModel = new GameObject ();
 		cameraModel.AddComponent<Camera> ();
 		cameraModel.GetComponent<Camera> ().orthographic = true;
 		cameraModel.GetComponent<Camera> ().aspect = 1f;
 		cameraModel.GetComponent<Camera> ().nearClipPlane = 0f;
-		cameraModel.GetComponent<Camera> ().cullingMask = 1 << 0;
+		cameraModel.GetComponent<Camera> ().cullingMask = cameraBorderLayerMask;
 
 		GameObject planeModel = GameObject.CreatePrimitive (PrimitiveType.Cube);
 		planeModel.GetComponent<Collider> ().enabled = false;
@@ -61,20 +63,17 @@ public class WorldBorders : MonoBehaviour {
 			Material targetMaterial = new Material (Shader.Find ("Standard"));
 			targetMaterial.mainTexture = targetTexture;
 
-			GameObject camera = Instantiate<GameObject> (cameraModel);
+			GameObject camera = Instantiate (cameraModel, -border.planePosition * borderMarginsPercentage, Quaternion.Euler (border.cameraRotation)) as GameObject;
 			camera.name = border.name + " Camera";
 			camera.transform.SetParent (this.transform);
-			camera.transform.localRotation = Quaternion.Euler (border.cameraRotation);
-			camera.transform.localPosition = -border.planePosition * borderMarginsPercentage;
 			camera.GetComponent<Camera> ().orthographicSize = transform.localScale[border.cameraOrthographicSizeParentLocalScaleIndex] / 2 * borderMarginsPercentage;
 			camera.GetComponent<Camera> ().farClipPlane = transform.localScale[border.camerafarClipPlaneParentLocalScaleIndex] * (borderMarginsPercentage*.99f);
 			camera.GetComponent<Camera> ().targetTexture = targetTexture;
 
-			GameObject plane = Instantiate<GameObject> (planeModel);
+			GameObject plane = Instantiate (planeModel, border.planePosition * borderMarginsPercentage, Quaternion.identity) as GameObject;
 			plane.name = border.name;
 			plane.transform.SetParent (this.transform);
 			plane.transform.localScale = border.planeScale * borderMarginsPercentage;
-			plane.transform.localPosition = border.planePosition * borderMarginsPercentage;
 			plane.GetComponent<MeshRenderer> ().material = targetMaterial;
 		}
 
