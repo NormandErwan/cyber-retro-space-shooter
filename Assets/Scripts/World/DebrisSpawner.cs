@@ -3,13 +3,9 @@ using System.Collections;
 
 public class DebrisSpawner : MonoBehaviour {
 
-	// Use this for initialization
+	private WorldBorders worldBorders;
+
 	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
 	
 	}
 }

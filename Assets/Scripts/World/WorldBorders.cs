@@ -6,9 +6,10 @@ public class WorldBorders : MonoBehaviour {
 
 	public float borderMarginsPercentage;
 	public RenderTexture cameraBorderTextureModel;
+	public LayerMask constrainedLayers;
+	public LayerMask cameraBorderLayerMask;
 
 	private Vector3 bordersMin, bordersMax;
-	private int cameraBorderLayerMask;
 
 	private class Border {
 		public string name;
@@ -35,7 +36,6 @@ public class WorldBorders : MonoBehaviour {
 	};
 
 	void Start () {
-		cameraBorderLayerMask = LayerMask.GetMask ("SpaceObjects");
 		SetupBorders ();
 	}
 
@@ -63,17 +63,20 @@ public class WorldBorders : MonoBehaviour {
 			Material targetMaterial = new Material (Shader.Find ("Standard"));
 			targetMaterial.mainTexture = targetTexture;
 
-			GameObject camera = Instantiate (cameraModel, -border.planePosition * borderMarginsPercentage, Quaternion.Euler (border.cameraRotation)) as GameObject;
+			GameObject camera = Instantiate<GameObject>  (cameraModel);
 			camera.name = border.name + " Camera";
 			camera.transform.SetParent (this.transform);
+			camera.transform.localRotation = Quaternion.Euler (border.cameraRotation);
+			camera.transform.localPosition = -border.planePosition * borderMarginsPercentage;
 			camera.GetComponent<Camera> ().orthographicSize = transform.localScale[border.cameraOrthographicSizeParentLocalScaleIndex] / 2 * borderMarginsPercentage;
 			camera.GetComponent<Camera> ().farClipPlane = transform.localScale[border.camerafarClipPlaneParentLocalScaleIndex] * (borderMarginsPercentage*.99f);
 			camera.GetComponent<Camera> ().targetTexture = targetTexture;
 
-			GameObject plane = Instantiate (planeModel, border.planePosition * borderMarginsPercentage, Quaternion.identity) as GameObject;
+			GameObject plane = Instantiate<GameObject> (planeModel);
 			plane.name = border.name;
 			plane.transform.SetParent (this.transform);
 			plane.transform.localScale = border.planeScale * borderMarginsPercentage;
+			plane.transform.localPosition = border.planePosition * borderMarginsPercentage;
 			plane.GetComponent<MeshRenderer> ().material = targetMaterial;
 		}
 
@@ -86,8 +89,8 @@ public class WorldBorders : MonoBehaviour {
 	 * exit the box.
 	 */
 	void OnTriggerExit (Collider other) {
-		if (other.tag == "FollowWorldBorders") {
-			Vector3 translation = new Vector3 (0, 0, 0);
+		if (constrainedLayers == (constrainedLayers | (1 << other.gameObject.layer))) { // Test the layer
+			Vector3 translation = Vector3.zero;
 			Vector3 otherPosition = other.transform.position;
 
 			for (int i = 0; i <= 2; i++) { // For each x,y,z axis
