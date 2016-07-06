@@ -4,20 +4,21 @@ using System.Collections.Generic;
 
 public class WeaponController : MonoBehaviour {
 
-	public List<GameObject> fireSpawns;
+	public GameObject[] weapons;
 	public GameObject munition;
 	public float fireRate = 0.1f;
+	public float fireEffectsTime = 0.1f;
 
-	private float nextFire = 0f;
-	private int nextFireSpawn = 0;
+	private float nextFireTimer = 0f;
+	private int nextWeaponIndex = 0;
 
 	/*
 	 * Fire considering the weapon fire rate.
 	 */
 	public void ContinuousFire () {
-		if (Time.time > nextFire) {
+		if (Time.time > nextFireTimer) {
 			Fire ();
-			nextFire = Time.time + fireRate;
+			nextFireTimer = Time.time + fireRate;
 		}
 	}
 
@@ -26,19 +27,30 @@ public class WeaponController : MonoBehaviour {
 	 */
 	public void DiscreteFire () {
 		Fire ();
-		nextFire = Time.time + fireRate;
+		nextFireTimer = Time.time + fireRate;
 	}
 
 	/**
 	 * Instantiate with a force a munition in the direction of the weapon. 
 	 */
 	void Fire () {
-		Transform fireSpawn = fireSpawns [nextFireSpawn].transform;
-		GameObject concreteMunition = Instantiate (munition, fireSpawn.position, fireSpawn.rotation) as GameObject;
+		GameObject weapon = weapons [nextWeaponIndex];
 
-		Vector3 munitionFireForce = transform.forward * concreteMunition.GetComponent<MunitionController> ().fireVelocity;
+		GameObject concreteMunition = Instantiate (munition, weapon.transform.position, weapon.transform.rotation) as GameObject;
+		weapon.GetComponent<Light> ().enabled = true;
+
+		Vector3 munitionFireForce = weapon.transform.forward * concreteMunition.GetComponent<MunitionController> ().fireVelocity;
 		concreteMunition.GetComponent<Rigidbody> ().AddForce (munitionFireForce, ForceMode.VelocityChange);
 
-		nextFireSpawn = ++nextFireSpawn % fireSpawns.Count;
+		StartCoroutine (DisableFireEffects (nextWeaponIndex));
+		nextWeaponIndex = ++nextWeaponIndex % weapons.Length;
+	}
+
+	/**
+	 * Disable the fire light after a delay.
+	 */
+	IEnumerator DisableFireEffects (int weaponIndex) {
+		yield return new WaitForSeconds(fireEffectsTime);
+		weapons [weaponIndex].GetComponent<Light> ().enabled = false;
 	}
 }

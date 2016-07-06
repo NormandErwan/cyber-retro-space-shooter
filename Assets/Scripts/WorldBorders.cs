@@ -11,29 +11,26 @@ public class WorldBorders : MonoBehaviour {
 
 	private class Border {
 		public string name;
-		public Vector3 planeScale, planeRotation, planePosition, cameraRotation, cameraPosition;
+		public Vector3 planeScale, planePosition, cameraRotation;
 		public int cameraOrthographicSizeParentLocalScaleIndex, camerafarClipPlaneParentLocalScaleIndex;
 
-		public Border(string name, Vector3 planeScale, Vector3 planePosition, 
-					  Vector3 cameraRotation, Vector3 cameraPosition, 
+		public Border(string name, Vector3 planeScale, Vector3 planePosition, Vector3 cameraRotation,
 					  int cameraOrthographicSizeParentLocalScaleIndex, int camerafarClipPlaneParentLocalScaleIndex) {
 			this.name = name;
 			this.planeScale = planeScale;
-			this.planeRotation = planeRotation;
 			this.planePosition = planePosition;
-			this.cameraPosition = cameraPosition;
 			this.cameraRotation = cameraRotation;
 			this.cameraOrthographicSizeParentLocalScaleIndex = cameraOrthographicSizeParentLocalScaleIndex;
 			this.camerafarClipPlaneParentLocalScaleIndex = camerafarClipPlaneParentLocalScaleIndex;
 		}
 	}
 	private Border[] borderDefinitions = new Border[] {
-		new Border("Up", new Vector3 (1f, 1f, 0.001f), new Vector3(0f, 0f, 0.5f), new Vector3(0f, 0f, 180f), new Vector3(0f, 0f, -0.5f), 0, 2),
-		new Border("Down", new Vector3 (1f, 1f, 0.001f), new Vector3(0f, 0f, -0.5f), new Vector3(0f, 180f, 0f), new Vector3(0f, 0f, 0.5f), 0, 2),
-		new Border("Top", new Vector3 (1f, 0.001f, 1f), new Vector3(0f, 0.5f, 0f), new Vector3(-90f, 180f, 0f), new Vector3(0f, -0.5f, 0f), 2, 1),
-		new Border("Bottom", new Vector3 (1f, 0.001f, 1f), new Vector3(0f, -0.5f, 0f), new Vector3(90f, 180f, 0f), new Vector3(0f, 0.5f, 0f), 2, 1),
-		new Border("Left", new Vector3 (0.001f, 1f, 1f), new Vector3(0.5f, 0f, 0f), new Vector3(0f, 90f, 0f), new Vector3(-0.5f, 0f, 0f), 1, 0),
-		new Border("Right", new Vector3 (0.001f, 1f, 1f), new Vector3(-0.5f, 0f, 0f), new Vector3(0f, -90f, 0f), new Vector3(0.5f, 0f, 0f), 1, 0)
+		new Border("Up", new Vector3 (1f, 1f, 0.001f), new Vector3(0f, 0f, 0.5f), new Vector3(0f, 0f, 180f), 0, 2),
+		new Border("Down", new Vector3 (1f, 1f, 0.001f), new Vector3(0f, 0f, -0.5f), new Vector3(0f, 180f, 0f), 0, 2),
+		new Border("Top", new Vector3 (1f, 0.001f, 1f), new Vector3(0f, 0.5f, 0f), new Vector3(-90f, 180f, 0f), 2, 1),
+		new Border("Bottom", new Vector3 (1f, 0.001f, 1f), new Vector3(0f, -0.5f, 0f), new Vector3(90f, 180f, 0f), 2, 1),
+		new Border("Left", new Vector3 (0.001f, 1f, 1f), new Vector3(0.5f, 0f, 0f), new Vector3(0f, 90f, 0f), 1, 0),
+		new Border("Right", new Vector3 (0.001f, 1f, 1f), new Vector3(-0.5f, 0f, 0f), new Vector3(0f, -90f, 0f), 1, 0)
 	};
 
 	void Start () {
@@ -68,7 +65,7 @@ public class WorldBorders : MonoBehaviour {
 			camera.name = border.name + " Camera";
 			camera.transform.SetParent (this.transform);
 			camera.transform.localRotation = Quaternion.Euler (border.cameraRotation);
-			camera.transform.localPosition = border.cameraPosition * borderMarginsPercentage;
+			camera.transform.localPosition = -border.planePosition * borderMarginsPercentage;
 			camera.GetComponent<Camera> ().orthographicSize = transform.localScale[border.cameraOrthographicSizeParentLocalScaleIndex] / 2 * borderMarginsPercentage;
 			camera.GetComponent<Camera> ().farClipPlane = transform.localScale[border.camerafarClipPlaneParentLocalScaleIndex] * (borderMarginsPercentage*.99f);
 			camera.GetComponent<Camera> ().targetTexture = targetTexture;
