@@ -9,9 +9,10 @@ public class WorldBorders : MonoBehaviour {
 	public LayerMask constrainedLayers;
 	public LayerMask cameraBorderLayerMask;
 
-	private Vector3 bordersMin, bordersMax;
+	Vector3 bordersMin, bordersMax;
+	bool ready;
 
-	private class Border {
+	class Border {
 		public string name;
 		public Vector3 planeScale, planePosition, cameraRotation;
 		public int cameraOrthographicSizeParentLocalScaleIndex, camerafarClipPlaneParentLocalScaleIndex;
@@ -26,7 +27,7 @@ public class WorldBorders : MonoBehaviour {
 			this.camerafarClipPlaneParentLocalScaleIndex = camerafarClipPlaneParentLocalScaleIndex;
 		}
 	}
-	private Border[] borderDefinitions = new Border[] {
+	Border[] borderDefinitions = new Border[] {
 		new Border("Up", new Vector3 (1f, 1f, 0.001f), new Vector3(0f, 0f, 0.5f), new Vector3(0f, 0f, 180f), 0, 2),
 		new Border("Down", new Vector3 (1f, 1f, 0.001f), new Vector3(0f, 0f, -0.5f), new Vector3(0f, 180f, 0f), 0, 2),
 		new Border("Top", new Vector3 (1f, 0.001f, 1f), new Vector3(0f, 0.5f, 0f), new Vector3(-90f, 180f, 0f), 2, 1),
@@ -36,18 +37,36 @@ public class WorldBorders : MonoBehaviour {
 	};
 
 	void Start () {
+		ready = false;
+		ConfigurateBorders ();
+		ready = true;
 		SetupBorders ();
+	}
+
+	public Vector3 BordersMin {
+		get { return bordersMin; }
+	}
+
+	public Vector3 BordersMax {
+		get { return bordersMax; }
+	}
+
+	public bool Ready {
+		get { return ready; }
 	}
 
 	/*
 	 * Set the world borders following the position and the scale of the object.
 	 */
-	void SetupBorders () {
-		// Used by OnTriggerExit
+	void ConfigurateBorders () {
 		bordersMin = - transform.localScale / 2 + transform.position;
 		bordersMax = transform.localScale / 2 + transform.position;
+	}
 
-		// Setup each border and each camera of the box
+	/*
+	 * Setup each border and each camera of the box.
+	 */
+	void SetupBorders () {
 		GameObject cameraModel = new GameObject ();
 		cameraModel.AddComponent<Camera> ();
 		cameraModel.GetComponent<Camera> ().orthographic = true;
@@ -102,5 +121,11 @@ public class WorldBorders : MonoBehaviour {
 			}
 			other.transform.Translate (translation, Space.World);
 		}
+	}
+
+	void OnDrawGizmos() {
+		ready = false;
+		ConfigurateBorders ();
+		ready = true;
 	}
 }

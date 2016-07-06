@@ -30,7 +30,7 @@ public class LifeController : MonoBehaviour {
 	 */
 	public float LifePoints {
 		get { return lifePoints; }
-		set { lifePoints = value; }
+		set { lifeCapacity = lifePoints = value; }
 	}
 
 	/*
