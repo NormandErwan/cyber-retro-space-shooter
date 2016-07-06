@@ -37,6 +37,7 @@ public class WeaponController : MonoBehaviour {
 		GameObject weapon = weapons [nextWeaponIndex];
 
 		GameObject concreteMunition = Instantiate (munition, weapon.transform.position, weapon.transform.rotation) as GameObject;
+		concreteMunition.transform.SetParent (this.transform);
 		weapon.GetComponent<Light> ().enabled = true;
 
 		Vector3 munitionFireForce = weapon.transform.forward * concreteMunition.GetComponent<MunitionController> ().fireVelocity;
