@@ -127,5 +127,7 @@ public class WorldBorders : MonoBehaviour {
 		ready = false;
 		ConfigurateBorders ();
 		ready = true;
+
+		Gizmos.DrawWireCube (transform.position, transform.localScale * borderMarginsPercentage);
 	}
 }

@@ -30,14 +30,14 @@ public class WeaponController : MonoBehaviour {
 		nextFireTimer = Time.time + fireRate;
 	}
 
-	/**
+	/*
 	 * Instantiate with a force a munition in the direction of the weapon. 
 	 */
 	void Fire () {
 		GameObject weapon = weapons [nextWeaponIndex];
 
-		GameObject concreteMunition = Instantiate (munition, weapon.transform.position, weapon.transform.rotation) as GameObject;
-		concreteMunition.transform.SetParent (this.transform);
+		GameObject concreteMunition = Instantiate (munition, munition.transform.position + weapon.transform.position, weapon.transform.rotation) as GameObject;
+		concreteMunition.transform.SetParent (weapon.transform);
 		weapon.GetComponent<Light> ().enabled = true;
 
 		Vector3 munitionFireForce = weapon.transform.forward * concreteMunition.GetComponent<MunitionController> ().fireVelocity;
@@ -47,7 +47,7 @@ public class WeaponController : MonoBehaviour {
 		nextWeaponIndex = ++nextWeaponIndex % weapons.Length;
 	}
 
-	/**
+	/*
 	 * Disable the fire light after a delay.
 	 */
 	IEnumerator DisableFireEffects (int weaponIndex) {
