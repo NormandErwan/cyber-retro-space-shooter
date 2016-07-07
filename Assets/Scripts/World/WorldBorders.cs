@@ -122,12 +122,4 @@ public class WorldBorders : MonoBehaviour {
 			other.transform.Translate (translation, Space.World);
 		}
 	}
-
-	void OnDrawGizmos() {
-		ready = false;
-		ConfigurateBorders ();
-		ready = true;
-
-		Gizmos.DrawWireCube (transform.position, transform.localScale * borderMarginsPercentage);
-	}
 }
