@@ -7,21 +7,17 @@ public class DebrisSpawner : MonoBehaviour {
 	public GameObject[] debris;
 	public float debrisSpeed;
 
-	Vector3 bordersMin, bordersMax;
 	Vector3[, ,] spawnBoxGrid;
 
 	void Start () {
-		ConfigurateBorders ();
 		SetupSpawnGrid ();
 		GenerateDebris ();
 	}
 
-	void ConfigurateBorders () {
-		bordersMin = - transform.localScale / 2 + transform.localPosition;
-		bordersMax = transform.localScale / 2 + transform.localPosition;
-	}
-
 	void SetupSpawnGrid () {
+		Vector3 bordersMin = - transform.localScale / 2 + transform.localPosition;
+		Vector3 bordersMax = transform.localScale / 2 + transform.localPosition;
+
 		// Allocate the grid
 		Vector3 spawnGridSize = Vector3.Scale (bordersMax - bordersMin, Utilities.Vector3Reciprocal(spawnBoxSize));
 		spawnBoxGrid = new Vector3[(int)spawnGridSize.x, (int)spawnGridSize.y, (int)spawnGridSize.z];
@@ -63,7 +59,6 @@ public class DebrisSpawner : MonoBehaviour {
 	 * Display a vizualisation of the spawn boxes.
 	 */
 	void OnDrawGizmosSelected() {
-		ConfigurateBorders ();
 		SetupSpawnGrid ();
 
 		foreach (Vector3 spawnBox in spawnBoxGrid) {
