@@ -40,7 +40,7 @@ public class WorldBorders : MonoBehaviour {
 		ready = false;
 		ConfigurateBorders ();
 		ready = true;
-		SetupBorders ();
+		//SetupBorders ();
 	}
 
 	public Vector3 BordersMin {
@@ -121,5 +121,11 @@ public class WorldBorders : MonoBehaviour {
 			}
 			other.transform.Translate (translation, Space.World);
 		}
+	}
+
+	void OnDrawGizmos() {
+		ready = false;
+		ConfigurateBorders ();
+		ready = true;
 	}
 }

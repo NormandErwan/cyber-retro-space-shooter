@@ -5,21 +5,23 @@ public class DebrisController : SpaceObjectController {
 
 	public float minRandomScale;
 	public float maxRandomScale;
-	public float scaleVariability;
-	public float maxRandomSpeed;
+	public float scaleAxisVariability;
+	public float speedVariablity;
 	public float maxRandomTumble;
 
-	protected override void Start () {
-		base.Start();
-		DebrisConfiguration ();
+	Vector3 speedForce;
+
+	public Vector3 SpeedForce {
+		get { return speedForce; }
+		set { speedForce = value; }
 	}
 
-	void DebrisConfiguration () {
+	public void ConfigurateDebris () {
 		Rigidbody rigidbody = GetComponent<Rigidbody> ();
 
 		// Random scale
 		Vector3 randomScale = Vector3.one * Random.value * (maxRandomScale - minRandomScale)
-							+ (Random.insideUnitSphere * 2 * scaleVariability - Vector3.one)
+							+ (Random.insideUnitSphere * 2 * scaleAxisVariability - Vector3.one) // Random vector3 between (-1,-1,-1) to (1,1,1)
 							+ Vector3.one * minRandomScale;
 		transform.localScale = randomScale;
 
@@ -30,7 +32,7 @@ public class DebrisController : SpaceObjectController {
 		rigidbody.mass *= randomScale.magnitude;
 
 		// Random velocity
-		rigidbody.AddForce (Random.insideUnitSphere * maxRandomSpeed * rigidbody.mass, ForceMode.Impulse);
+		rigidbody.AddForce (speedForce + Random.insideUnitSphere * speedVariablity, ForceMode.VelocityChange);
 		rigidbody.AddTorque (Random.insideUnitSphere * maxRandomTumble * rigidbody.mass, ForceMode.Impulse);
 	}
 

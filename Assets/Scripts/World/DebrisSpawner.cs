@@ -6,6 +6,7 @@ public class DebrisSpawner : MonoBehaviour {
 	public WorldBorders worldBorders;
 	public Vector3 spawnBoxSize;
 	public GameObject[] debris;
+	public float debrisSpeed;
 
 	Vector3[, ,] spawnBoxCenterGrid;
 
@@ -34,11 +35,17 @@ public class DebrisSpawner : MonoBehaviour {
 	}
 
 	void GenerateDebris () {
+		Vector3 debrisSpeedForce = transform.forward * debrisSpeed;
+
 		foreach (Vector3 spawnBoxCenter in spawnBoxCenterGrid) {
 			int randomDebrisIndex = Random.Range (0, debris.Length-1);
+
 			GameObject deb = Instantiate<GameObject> (debris[randomDebrisIndex]);
 			deb.transform.SetParent (this.transform);
-			deb.transform.localPosition = spawnBoxCenter;
+			deb.transform.position = spawnBoxCenter;
+
+			deb.GetComponent<DebrisController> ().SpeedForce = debrisSpeedForce;
+			deb.GetComponent<DebrisController> ().ConfigurateDebris();
 		}
 	}
 

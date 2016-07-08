@@ -14,8 +14,8 @@ public class DestroyBorders : MonoBehaviour {
 		boxCollider.size = Vector3.one * worldBorders.borderMarginsPercentage;
 	}
 
-	void OnCollisionExit (Collision collision) {
-		Destroy (collision.gameObject);
+	void OnTriggerExit (Collider other) {
+		Destroy (other.gameObject);
 	}
 
 	void OnDrawGizmos () {
