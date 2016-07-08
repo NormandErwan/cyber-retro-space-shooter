@@ -20,10 +20,15 @@ public class DebrisController : SpaceObjectController {
 		Rigidbody rigidbody = GetComponent<Rigidbody> ();
 
 		// Random scale
+		Transform parent = transform.parent;
+		transform.parent = null;
+
 		Vector3 randomScale = Vector3.one * Random.value * (maxRandomScale - minRandomScale)
 							+ (Random.insideUnitSphere * 2 * scaleAxisVariability - Vector3.one) // Random vector3 between (-1,-1,-1) to (1,1,1)
 							+ Vector3.one * minRandomScale;
 		transform.localScale = randomScale;
+
+		transform.parent = parent;
 
 		// Random life points
 		life.LifePoints *= randomScale.magnitude;

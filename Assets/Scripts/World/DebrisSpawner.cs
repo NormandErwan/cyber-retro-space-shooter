@@ -3,64 +3,71 @@ using System.Collections;
 
 public class DebrisSpawner : MonoBehaviour {
 
-	public WorldBorders worldBorders;
 	public Vector3 spawnBoxSize;
 	public GameObject[] debris;
 	public float debrisSpeed;
 
-	Vector3[, ,] spawnBoxCenterGrid;
+	Vector3 bordersMin, bordersMax;
+	Vector3[, ,] spawnBoxGrid;
 
-	void Update () {
-		if (spawnBoxCenterGrid == null && worldBorders.Ready) {
-			SetupSpawnGrid ();
-			GenerateDebris ();
-		}
+	void Start () {
+		ConfigurateBorders ();
+		SetupSpawnGrid ();
+		GenerateDebris ();
+	}
+
+	void ConfigurateBorders () {
+		bordersMin = - transform.localScale / 2 + transform.localPosition;
+		bordersMax = transform.localScale / 2 + transform.localPosition;
 	}
 
 	void SetupSpawnGrid () {
-		// Allocate
-		Vector3 spawnGridSize = Vector3.Scale (worldBorders.BordersMax - worldBorders.BordersMin, Vector3Reciprocal(spawnBoxSize));
-		spawnBoxCenterGrid = new Vector3[(int)spawnGridSize.x, (int)spawnGridSize.y, (int)spawnGridSize.z];
+		// Allocate the grid
+		Vector3 spawnGridSize = Vector3.Scale (bordersMax - bordersMin, Utilities.Vector3Reciprocal(spawnBoxSize));
+		spawnBoxGrid = new Vector3[(int)spawnGridSize.x, (int)spawnGridSize.y, (int)spawnGridSize.z];
 
-		// Fill
-		for (int i = 0; i < spawnBoxCenterGrid.GetLength(0); i++) {
-			for (int j = 0; j < spawnBoxCenterGrid.GetLength(1); j++) {
-				for (int k = 0; k < spawnBoxCenterGrid.GetLength(2); k++) {
-					spawnBoxCenterGrid [i, j, k] = Vector3.Scale (new Vector3 (i, j, k), spawnBoxSize) 
+		// Fill the grid with the position of the spawn boxes
+		for (int i = 0; i < spawnBoxGrid.GetLength(0); i++) {
+			for (int j = 0; j < spawnBoxGrid.GetLength(1); j++) {
+				for (int k = 0; k < spawnBoxGrid.GetLength(2); k++) {
+					spawnBoxGrid [i, j, k] = Vector3.Scale (new Vector3 (i, j, k), spawnBoxSize) 
 						+ spawnBoxSize / 2 // center of the box
-						+ worldBorders.BordersMin;
+						+ bordersMin;
 				}
 			}
 		}
 	}
 
 	void GenerateDebris () {
+		// Create the parent object of the generated debris
+		GameObject debrisList = new GameObject ("DebrisList");
+		debrisList.transform.localScale = Vector3.one;
+		debrisList.transform.parent = this.transform;
+
 		Vector3 debrisSpeedForce = transform.forward * debrisSpeed;
 
-		foreach (Vector3 spawnBoxCenter in spawnBoxCenterGrid) {
+		// Generate the debris
+		foreach (Vector3 spawnBoxCenter in spawnBoxGrid) {
 			int randomDebrisIndex = Random.Range (0, debris.Length-1);
 
 			GameObject deb = Instantiate<GameObject> (debris[randomDebrisIndex]);
-			deb.transform.SetParent (this.transform);
-			deb.transform.position = spawnBoxCenter;
+			deb.transform.SetParent (debrisList.transform);
 
 			deb.GetComponent<DebrisController> ().SpeedForce = debrisSpeedForce;
 			deb.GetComponent<DebrisController> ().ConfigurateDebris();
+			deb.transform.position = spawnBoxCenter;
 		}
 	}
 
+	/**
+	 * Display a vizualisation of the spawn boxes.
+	 */
 	void OnDrawGizmosSelected() {
-		if (!worldBorders.Ready) {
-			return;
-		}
-
+		ConfigurateBorders ();
 		SetupSpawnGrid ();
-		foreach (Vector3 spawnBoxCenter in spawnBoxCenterGrid) {
-			Gizmos.DrawWireCube (spawnBoxCenter, spawnBoxSize);
-		}
-	}
 
-	Vector3 Vector3Reciprocal (Vector3 vector) {
-		return new Vector3 (1 / vector.x, 1 / vector.y, 1 / vector.z);
+		foreach (Vector3 spawnBox in spawnBoxGrid) {
+			Gizmos.DrawWireCube (spawnBox, spawnBoxSize);
+		}
 	}
 }

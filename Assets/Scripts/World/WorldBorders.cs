@@ -10,7 +10,6 @@ public class WorldBorders : MonoBehaviour {
 	public LayerMask cameraBorderLayerMask;
 
 	Vector3 bordersMin, bordersMax;
-	bool ready;
 
 	class Border {
 		public string name;
@@ -37,22 +36,8 @@ public class WorldBorders : MonoBehaviour {
 	};
 
 	void Start () {
-		ready = false;
 		ConfigurateBorders ();
-		ready = true;
 		//SetupBorders ();
-	}
-
-	public Vector3 BordersMin {
-		get { return bordersMin; }
-	}
-
-	public Vector3 BordersMax {
-		get { return bordersMax; }
-	}
-
-	public bool Ready {
-		get { return ready; }
 	}
 
 	/*
@@ -121,11 +106,5 @@ public class WorldBorders : MonoBehaviour {
 			}
 			other.transform.Translate (translation, Space.World);
 		}
-	}
-
-	void OnDrawGizmos() {
-		ready = false;
-		ConfigurateBorders ();
-		ready = true;
 	}
 }
