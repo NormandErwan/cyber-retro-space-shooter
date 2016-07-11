@@ -3,7 +3,45 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 
-public class PlayerController : ShipController {
+public class PlayerController : Ship {
+
+	public Text healthValueText;
+	public Slider healthSlider;
+	public Text shieldValueText;
+	public Slider shieldSlider;
+	public Text engineValueText;
+	public Slider engineShieldSlider;
+
+	private float engineShieldSliderStep;
+	private float MIN_PERCENTAGE = 0f, MAX_PERCENTAGE = 100f;
+	private readonly float SLIDER_FILL_BAR_HEIGTH = 20f;
+
+	protected override void Start () {
+		base.Start ();
+
+		ConfigureHUD ();
+		UpdateHUD ();
+	}
+
+	void ConfigureHUD () {
+		healthSlider.minValue = LifeController.MIN_LIFE_POINTS;
+		healthSlider.maxValue = life.lifeCapacity;
+
+		shieldSlider.minValue = LifeController.MIN_SHIELD_POINTS;
+		shieldSlider.maxValue = life.shieldMaxCapacity;
+
+		engineShieldSlider.minValue = MIN_PERCENTAGE;
+		engineShieldSlider.maxValue = Mathf.Round (MAX_PERCENTAGE * SLIDER_FILL_BAR_HEIGTH / engineShieldSlider.GetComponent<RectTransform> ().rect.height);
+		engineShieldSliderStep = MAX_PERCENTAGE / engineShieldSlider.maxValue;
+	}
+
+	public void AdjustShieldEngine (float value) {
+		float shieldCapacityPercentage = (engineShieldSlider.maxValue - value) * engineShieldSliderStep;
+		life.ShieldCapacityPercentage = shieldCapacityPercentage;
+
+		float speedPercentage = value * engineShieldSliderStep;
+		engine.SpeedPercentage = speedPercentage;
+	}
 
 	/*
 	 * Fire with the weapon when the user requests it.
@@ -28,9 +66,32 @@ public class PlayerController : ShipController {
 	 * Manage the notifications of the LifeController.
 	 */
 	protected override void LifeObserver () {
-		HUDInfos.text = "Life: " + life.LifePoints.ToString("F1") + " Shield: " + life.ShieldPoints.ToString("F1") + " (Player)";
+		UpdateHUD ();
+
 		if (life.LifePoints == 0) {
 			Debug.Log ("Game Over");
 		}
+	}
+
+	/*
+	 * Manage the notifications of the EngineController.
+	 */
+	protected override void EngineObserver () {
+		UpdateHUD ();
+	}
+
+	/*
+	 *  Update the player's HUD information.
+	 */
+	void UpdateHUD () {
+		float lifePoints = life.LifePoints;
+		healthValueText.text = lifePoints.ToString("000");
+		healthSlider.value = lifePoints;
+
+		shieldValueText.text = "%" + life.ShieldPointsPercentage.ToString("000");
+		shieldSlider.value = life.ShieldPoints;
+
+		float speedPercentage = engine.SpeedPercentage;
+		engineValueText.text = "%" + speedPercentage.ToString ("000");
 	}
 }

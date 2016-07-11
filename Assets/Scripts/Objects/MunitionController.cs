@@ -18,9 +18,8 @@ public class MunitionController : MonoBehaviour {
 		float velocityMagnitude = gameObject.GetComponent<Rigidbody> ().velocity.magnitude;
 		if (velocityMagnitude < destroyBelowVelocity 
 			&& velocityMagnitude != 0) { // Don't destroy it at it's creation, before the force has been applied by the weapon
-			//Destroy (gameObject);
+			Destroy (gameObject);
 		}
-		Debug.Log (velocityMagnitude);
 	}
 
 	/*

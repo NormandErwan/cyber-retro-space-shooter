@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 
-public class EnemyController : ShipController {
+public class EnemyController : Ship {
 
 	/*
 	 * Fire with the weapon.
@@ -23,9 +23,14 @@ public class EnemyController : ShipController {
 	 * Manage the notifications of the LifeController.
 	 */
 	protected override void LifeObserver () {
-		HUDInfos.text = "Life: " + life.LifePoints.ToString("F1") + " Shield: " + life.ShieldPoints.ToString("F1") + " (Enemy)";
 		if (life.LifePoints == 0f) {
 			Destroy (gameObject);
 		}
+	}
+
+	/*
+	 * Manage the notifications of the EngineController.
+	 */
+	protected override void EngineObserver () {
 	}
 }

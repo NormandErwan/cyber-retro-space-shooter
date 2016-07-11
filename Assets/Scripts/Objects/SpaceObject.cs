@@ -2,7 +2,7 @@
 using UnityEngine.Events;
 using System.Collections;
 
-public abstract class SpaceObjectController : MonoBehaviour {
+public abstract class SpaceObject : MonoBehaviour {
 
 	public LifeController life;
 
@@ -13,7 +13,7 @@ public abstract class SpaceObjectController : MonoBehaviour {
 		lifeEvents.AddListener (LifeObserver);
 		life.AddObserver (lifeEvents);
 
-		LifeObserver(); // Init the LifeController infos in the HUD
+		LifeObserver(); // Init the LifeController info in the HUD
 	}
 
 	/*

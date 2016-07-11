@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DebrisController : SpaceObjectController {
+public class DebrisController : SpaceObject {
 
 	public float minRandomScale;
 	public float maxRandomScale;
@@ -31,7 +31,7 @@ public class DebrisController : SpaceObjectController {
 		transform.parent = parent;
 
 		// Random life points
-		life.LifePoints *= randomScale.magnitude;
+		life.LifePoints *= Mathf.RoundToInt(randomScale.magnitude);
 
 		// Random mass
 		rigidbody.mass *= randomScale.magnitude;
