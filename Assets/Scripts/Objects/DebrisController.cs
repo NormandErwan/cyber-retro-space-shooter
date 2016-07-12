@@ -32,7 +32,7 @@ public class DebrisController : SpaceObject {
 		transform.parent = parent;
 
 		// Random life points
-		life.LifePoints *= Mathf.RoundToInt(randomScale.magnitude);
+		life.LifePoints *= Mathf.Max(Mathf.RoundToInt(randomScale.magnitude), life.LifePoints);
 
 		// Random mass
 		rigidbody.mass *= randomScale.magnitude;
@@ -46,7 +46,7 @@ public class DebrisController : SpaceObject {
 	 * Manage the notifications of the LifeController.
 	 */
 	protected override void LifeObserver () {
-		if (life.LifePoints == 0f) {
+		if (life.LifePoints == LifeController.MIN_LIFE_POINTS) {
 			scoreManager.Score += scoreValue;
 			Destroy (gameObject);
 		}

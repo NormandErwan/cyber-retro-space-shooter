@@ -68,7 +68,7 @@ public class PlayerController : Ship {
 	protected override void LifeObserver () {
 		UpdateHUD ();
 
-		if (life.LifePoints == 0) {
+		if (life.LifePoints == LifeController.MIN_LIFE_POINTS) {
 			Debug.Log ("Game Over");
 		}
 	}

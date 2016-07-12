@@ -25,8 +25,8 @@ public class EnemyController : Ship {
 	 * Manage the notifications of the LifeController.
 	 */
 	protected override void LifeObserver () {
-		if (life.LifePoints == 0f) {
-			//scoreManager.Score += scoreValue;
+		if (life.LifePoints == LifeController.MIN_LIFE_POINTS) {
+			scoreManager.Score += scoreValue;
 			Destroy (gameObject);
 		}
 	}
