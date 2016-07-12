@@ -5,6 +5,8 @@ using System.Collections;
 
 public class EnemyController : Ship {
 
+	public int scoreValue = 1;
+
 	/*
 	 * Fire with the weapon.
 	 */
@@ -24,6 +26,7 @@ public class EnemyController : Ship {
 	 */
 	protected override void LifeObserver () {
 		if (life.LifePoints == 0f) {
+			//scoreManager.Score += scoreValue;
 			Destroy (gameObject);
 		}
 	}

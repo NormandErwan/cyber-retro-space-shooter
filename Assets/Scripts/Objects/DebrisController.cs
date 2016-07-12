@@ -9,7 +9,9 @@ public class DebrisController : SpaceObject {
 	public float speedVariablity;
 	public float maxRandomTumble;
 
-	Vector3 speedForce;
+	public int scoreValue = 1;
+
+	private Vector3 speedForce;
 
 	public Vector3 SpeedForce {
 		get { return speedForce; }
@@ -45,6 +47,7 @@ public class DebrisController : SpaceObject {
 	 */
 	protected override void LifeObserver () {
 		if (life.LifePoints == 0f) {
+			scoreManager.Score += scoreValue;
 			Destroy (gameObject);
 		}
 	}

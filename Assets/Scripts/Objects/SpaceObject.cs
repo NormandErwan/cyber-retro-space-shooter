@@ -6,12 +6,16 @@ public abstract class SpaceObject : MonoBehaviour {
 
 	public LifeController life;
 
+	protected ScoreManager scoreManager;
+
 	private UnityEvent lifeEvents;
 
 	protected virtual void Start () {
 		lifeEvents = new UnityEvent();
 		lifeEvents.AddListener (LifeObserver);
 		life.AddObserver (lifeEvents);
+		
+		scoreManager = GameObject.FindGameObjectWithTag ("ScoreManager").GetComponent<ScoreManager> ();
 
 		LifeObserver(); // Init the LifeController info in the HUD
 	}
