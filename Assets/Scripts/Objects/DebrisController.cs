@@ -23,9 +23,8 @@ public class DebrisController : SpaceObject {
 		Transform parent = transform.parent;
 		transform.parent = null;
 
-		Vector3 randomScale = Vector3.one * Random.value * (maxRandomScale - minRandomScale)
-							+ (Random.insideUnitSphere * 2 * scaleAxisVariability - Vector3.one) // Random vector3 between (-1,-1,-1) to (1,1,1)
-							+ Vector3.one * minRandomScale;
+		Vector3 randomScale = Vector3.one * Random.value * (maxRandomScale - minRandomScale) + Vector3.one * minRandomScale // Random axis-uniform scale
+							+ (Random.insideUnitSphere * 2 * scaleAxisVariability - Vector3.one); // Random vector3 between (-1,-1,-1) to (1,1,1)
 		transform.localScale = randomScale;
 
 		transform.parent = parent;
@@ -45,8 +44,8 @@ public class DebrisController : SpaceObject {
 	 * Manage the notifications of the LifeController.
 	 */
 	protected override void LifeObserver () {
-		/*if (life.LifePoints == 0f) {
+		if (life.LifePoints == 0f) {
 			Destroy (gameObject);
-		}*/
+		}
 	}
 }

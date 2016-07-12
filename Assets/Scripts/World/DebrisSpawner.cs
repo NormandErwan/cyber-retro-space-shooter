@@ -51,7 +51,9 @@ public class DebrisSpawner : MonoBehaviour {
 
 			deb.GetComponent<DebrisController> ().SpeedForce = debrisSpeedForce;
 			deb.GetComponent<DebrisController> ().ConfigurateDebris();
-			deb.transform.position = spawnBoxCenter;
+
+			Vector3 randomPositionInsideSpawnBox = (spawnBoxSize - deb.transform.lossyScale) / 2; // Assume the debris' scale is smaller than the box' scale
+			deb.transform.position = spawnBoxCenter + Vector3.Scale(Random.insideUnitSphere, randomPositionInsideSpawnBox);
 		}
 	}
 
