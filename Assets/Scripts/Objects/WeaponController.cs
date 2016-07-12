@@ -38,20 +38,19 @@ public class WeaponController : MonoBehaviour {
 
 		GameObject concreteMunition = Instantiate (munition, munition.transform.position + weapon.transform.position, weapon.transform.rotation) as GameObject;
 		concreteMunition.transform.SetParent (weapon.transform);
-		weapon.GetComponent<Light> ().enabled = true;
 
-		Vector3 munitionFireForce = weapon.transform.forward * concreteMunition.GetComponent<MunitionController> ().fireVelocity;
+		Vector3 munitionFireForce = GetComponent<Rigidbody> ().velocity 
+			+ weapon.transform.forward * concreteMunition.GetComponent<MunitionController> ().fireVelocity;
 		concreteMunition.GetComponent<Rigidbody> ().AddForce (munitionFireForce, ForceMode.VelocityChange);
 
-		StartCoroutine (DisableFireEffects (nextWeaponIndex));
+		//StartCoroutine (DisableFireEffects (nextWeaponIndex));
 		nextWeaponIndex = ++nextWeaponIndex % weapons.Length;
 	}
 
 	/*
-	 * Disable the fire light after a delay.
+	 * Disable the fire effects after a delay.
 	 */
 	IEnumerator DisableFireEffects (int weaponIndex) {
 		yield return new WaitForSeconds(fireEffectsTime);
-		weapons [weaponIndex].GetComponent<Light> ().enabled = false;
 	}
 }
