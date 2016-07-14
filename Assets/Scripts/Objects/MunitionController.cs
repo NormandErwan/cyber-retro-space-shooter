@@ -26,7 +26,7 @@ public class MunitionController : MonoBehaviour {
 	 * Hit every object with a LifeController and inflict damages.
 	 */
 	void OnCollisionEnter (Collision colision) {
-		LifeController otherLife = colision.gameObject.GetComponent<LifeController> ();
+		LifeShieldManager otherLife = colision.gameObject.GetComponent<LifeShieldManager> ();
 		if (otherLife != null) {
 			otherLife.Hit (damageFactor);
 		}

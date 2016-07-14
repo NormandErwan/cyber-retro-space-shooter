@@ -46,7 +46,7 @@ public class DebrisController : SpaceObject {
 	 * Manage the notifications of the LifeController.
 	 */
 	protected override void LifeObserver () {
-		if (life.LifePoints == LifeController.MIN_LIFE_POINTS) {
+		if (life.LifePoints == LifeShieldManager.MIN_LIFE_POINTS) {
 			scoreManager.Score += scoreValue;
 			Destroy (gameObject);
 		}

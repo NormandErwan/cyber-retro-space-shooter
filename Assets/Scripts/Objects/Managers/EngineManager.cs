@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EngineController : Observable {
+public class EngineManager : Observable {
 
 	public float minSpeed, maxSpeed;
 

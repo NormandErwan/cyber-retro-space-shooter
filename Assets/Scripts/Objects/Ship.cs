@@ -5,8 +5,8 @@ using System.Collections;
 
 public abstract class Ship : SpaceObject {
 
-	public WeaponController weapon;
-	public EngineController engine;
+	public WeaponManager weapon;
+	public EngineManager engine;
 
 	private UnityEvent engineEvents;
 

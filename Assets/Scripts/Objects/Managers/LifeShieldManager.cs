@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class LifeController : Observable {
+public class LifeShieldManager : Observable {
 
 	public float lifeCapacity = 1f;
 

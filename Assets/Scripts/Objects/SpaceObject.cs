@@ -4,7 +4,7 @@ using System.Collections;
 
 public abstract class SpaceObject : MonoBehaviour {
 
-	public LifeController life;
+	public LifeShieldManager life;
 
 	protected ScoreManager scoreManager;
 

@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerController : Ship {
 
@@ -12,8 +13,13 @@ public class PlayerController : Ship {
 	public Text engineValueText;
 	public Slider engineShieldSlider;
 
+	public int objectAvoidanceFactorScore = 1;
+	public LayerMask objectAvoidanceLayers;
+
 	private float engineShieldSliderStep;
-	private float MIN_PERCENTAGE = 0f, MAX_PERCENTAGE = 100f;
+	private Dictionary<GameObject, int> objectAvoidanceDic = new Dictionary<GameObject, int> ();
+
+	private const float MIN_PERCENTAGE = 0f, MAX_PERCENTAGE = 100f;
 	private readonly float SLIDER_FILL_BAR_HEIGTH = 20f;
 
 	protected override void Start () {
@@ -24,10 +30,10 @@ public class PlayerController : Ship {
 	}
 
 	void ConfigureHUD () {
-		healthSlider.minValue = LifeController.MIN_LIFE_POINTS;
+		healthSlider.minValue = LifeShieldManager.MIN_LIFE_POINTS;
 		healthSlider.maxValue = life.lifeCapacity;
 
-		shieldSlider.minValue = LifeController.MIN_SHIELD_POINTS;
+		shieldSlider.minValue = LifeShieldManager.MIN_SHIELD_POINTS;
 		shieldSlider.maxValue = life.shieldMaxCapacity;
 
 		engineShieldSlider.minValue = MIN_PERCENTAGE;
@@ -68,7 +74,7 @@ public class PlayerController : Ship {
 	protected override void LifeObserver () {
 		UpdateHUD ();
 
-		if (life.LifePoints == LifeController.MIN_LIFE_POINTS) {
+		if (life.LifePoints == LifeShieldManager.MIN_LIFE_POINTS) {
 			Debug.Log ("Game Over");
 		}
 	}
@@ -93,5 +99,25 @@ public class PlayerController : Ship {
 
 		float speedPercentage = engine.SpeedPercentage;
 		engineValueText.text = "%" + speedPercentage.ToString ("000");
+	}
+
+	void OnTriggerEnter (Collider other) {
+		if (Utilities.IsInLayerMask (other.gameObject.layer, objectAvoidanceLayers)) {
+			objectAvoidanceDic [other.gameObject] = 0;
+		}
+	}
+
+	void OnTriggerStay (Collider other) {
+		if (Utilities.IsInLayerMask (other.gameObject.layer, objectAvoidanceLayers)) {
+			print (other.bounds.SqrDistance (this.transform.position));
+			objectAvoidanceDic [other.gameObject] = objectAvoidanceFactorScore;
+		}
+	}
+
+	void OnTriggerExit (Collider other) {
+		if (Utilities.IsInLayerMask (other.gameObject.layer, objectAvoidanceLayers)) {
+			scoreManager.Score += objectAvoidanceDic [other.gameObject];
+			objectAvoidanceDic.Remove (other.gameObject);
+		}
 	}
 }

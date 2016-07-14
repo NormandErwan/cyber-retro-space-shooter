@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class WeaponController : MonoBehaviour {
+public class WeaponManager : MonoBehaviour {
 
 	public GameObject[] weapons;
 	public GameObject munition;
