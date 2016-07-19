@@ -14,10 +14,10 @@ public class PlayerController : Ship {
 	public Slider engineShieldSlider;
 
 	public int objectAvoidanceFactorScore = 1;
-	public LayerMask objectAvoidanceLayers;
+	public LayerMask objectAvoidanceMask;
 
 	private float engineShieldSliderStep;
-	private Dictionary<GameObject, int> objectAvoidanceDic = new Dictionary<GameObject, int> ();
+	//private Dictionary<GameObject, int> objectAvoidanceDic = new Dictionary<GameObject, int> ();
 
 	private const float MIN_PERCENTAGE = 0f, MAX_PERCENTAGE = 100f;
 	private readonly float SLIDER_FILL_BAR_HEIGTH = 20f;
@@ -101,7 +101,8 @@ public class PlayerController : Ship {
 		engineValueText.text = "%" + speedPercentage.ToString ("000");
 	}
 
-	void OnTriggerEnter (Collider other) {
+	// TODO : the closer has been the player to the other collider the more point he/she gains
+	/*void OnTriggerEnter (Collider other) {
 		if (Utilities.IsInLayerMask (other.gameObject.layer, objectAvoidanceLayers)) {
 			objectAvoidanceDic [other.gameObject] = 0;
 		}
@@ -109,15 +110,15 @@ public class PlayerController : Ship {
 
 	void OnTriggerStay (Collider other) {
 		if (Utilities.IsInLayerMask (other.gameObject.layer, objectAvoidanceLayers)) {
-			print (other.bounds.SqrDistance (this.transform.position));
 			objectAvoidanceDic [other.gameObject] = objectAvoidanceFactorScore;
 		}
-	}
+	}*/
 
 	void OnTriggerExit (Collider other) {
-		if (Utilities.IsInLayerMask (other.gameObject.layer, objectAvoidanceLayers)) {
-			scoreManager.Score += objectAvoidanceDic [other.gameObject];
-			objectAvoidanceDic.Remove (other.gameObject);
+		if (Utilities.IsInLayerMask (other.gameObject.layer, objectAvoidanceMask)) {
+			scoreManager.Score += objectAvoidanceFactorScore; 
+			//scoreManager.Score += objectAvoidanceDic [other.gameObject];
+			//objectAvoidanceDic.Remove (other.gameObject);
 		}
 	}
 }
