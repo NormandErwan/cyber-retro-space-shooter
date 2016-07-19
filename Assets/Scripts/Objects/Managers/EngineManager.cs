@@ -5,13 +5,27 @@ public class EngineManager : Observable {
 
 	public float minSpeed, maxSpeed;
 
-	private float speed;
-	private float speedPercentage;
+	private float speed, speedPercentage;
+	private float lastRealSpeedPercentage;
+	private Rigidbody rigidBody;
 
 	private const float MIN_PERCENTAGE = 0, MAX_PERCENTAGE = 100;
 
 	void Awake () {
 		ConfigurateSpeed ();
+	}
+
+	void Start () {
+		rigidBody = GetComponent<Rigidbody> ();
+	}
+
+	void FixedUpdate () {
+		// Real speed is changing
+		float realSpeedPercentage = RealSpeedPercentage();
+		if (realSpeedPercentage != lastRealSpeedPercentage) {
+			realSpeedPercentage = lastRealSpeedPercentage;
+			NotifyObservers ();
+		}
 	}
 
 	void ConfigurateSpeed () {
@@ -40,7 +54,14 @@ public class EngineManager : Observable {
 		NotifyObservers ();
 	}
 
+	public float RealSpeedPercentage () {
+		float realSpeed = Mathf.Round(rigidBody.velocity.magnitude) * rigidBody.mass;
+		float realSpeedPercentage = (realSpeed - minSpeed) / (maxSpeed - minSpeed) * MAX_PERCENTAGE;
+		realSpeedPercentage = Mathf.Max(realSpeedPercentage, MIN_PERCENTAGE);
+		return realSpeedPercentage;
+	}
+
 	public void Move () {
-		GetComponent<Rigidbody> ().AddForce (transform.forward * speed, ForceMode.Force);
+		rigidBody.AddForce (transform.forward * speed, ForceMode.Force);
 	}
 }

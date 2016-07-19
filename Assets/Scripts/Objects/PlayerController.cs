@@ -97,7 +97,7 @@ public class PlayerController : Ship {
 		shieldValueText.text = "%" + life.ShieldPointsPercentage.ToString("000");
 		shieldSlider.value = life.ShieldPoints;
 
-		float speedPercentage = engine.SpeedPercentage;
+		float speedPercentage = engine.RealSpeedPercentage ();
 		engineValueText.text = "%" + speedPercentage.ToString ("000");
 	}
 
