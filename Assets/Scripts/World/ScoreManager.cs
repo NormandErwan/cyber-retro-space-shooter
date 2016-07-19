@@ -22,6 +22,6 @@ public class ScoreManager : MonoBehaviour {
 	}
 
 	void UpdateHUD () {
-		scoreText.text = "SCORE: " + score;
+		scoreText.text = "SCORE " + score;
 	}
 }
