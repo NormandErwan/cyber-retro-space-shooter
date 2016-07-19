@@ -36,8 +36,9 @@ public class WeaponManager : MonoBehaviour {
 	void Fire () {
 		GameObject weapon = weapons [nextWeaponIndex];
 
-		GameObject concreteMunition = Instantiate (munition, munition.transform.position + weapon.transform.position, weapon.transform.rotation) as GameObject;
-		concreteMunition.transform.SetParent (weapon.transform);
+		GameObject concreteMunition = Instantiate<GameObject> (munition);
+		concreteMunition.transform.position = weapon.transform.position + munition.transform.position;
+		concreteMunition.transform.rotation = weapon.transform.rotation;
 
 		Vector3 munitionFireForce = GetComponent<Rigidbody> ().velocity 
 			+ weapon.transform.forward * concreteMunition.GetComponent<MunitionController> ().fireVelocity;
