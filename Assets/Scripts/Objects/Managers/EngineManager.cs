@@ -12,11 +12,9 @@ public class EngineManager : Observable {
 	private const float MIN_PERCENTAGE = 0, MAX_PERCENTAGE = 100;
 
 	void Awake () {
-		ConfigurateSpeed ();
-	}
-
-	void Start () {
 		rigidBody = GetComponent<Rigidbody> ();
+
+		ConfigurateSpeed ();
 	}
 
 	void FixedUpdate () {
