@@ -116,10 +116,12 @@ public class PlayerController : Ship {
 	}*/
 
 	void OnTriggerExit (Collider other) {
-		if (Utilities.IsInLayerMask (other.gameObject.layer, objectAvoidanceMask)) {
-			scoreManager.Score += objectAvoidanceFactorScore; 
-			//scoreManager.Score += objectAvoidanceDic [other.gameObject];
-			//objectAvoidanceDic.Remove (other.gameObject);
+		if (life.LifePoints > LifeShieldManager.MIN_LIFE_POINTS) {
+			if (Utilities.IsInLayerMask (other.gameObject.layer, objectAvoidanceMask)) {
+				scoreManager.Score += objectAvoidanceFactorScore; 
+				//scoreManager.Score += objectAvoidanceDic [other.gameObject];
+				//objectAvoidanceDic.Remove (other.gameObject);
+			}
 		}
 	}
 }
