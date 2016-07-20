@@ -51,12 +51,13 @@ public class PlayerController : Ship {
 
 	/*
 	 * Fire with the weapon when the user requests it.
+	 * TODO: use for debug on PC only, to remove.
 	 */
 	protected override void WeaponFire () {
-		if ((Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) || Input.GetKeyDown (KeyCode.Space)) {
+		if (Input.GetKeyDown (KeyCode.Space)) {
 			weapon.DiscreteFire ();
 		}
-		else if (Input.touchCount > 0 || Input.GetKey (KeyCode.Space)) {
+		else if (Input.GetKey (KeyCode.Space)) {
 			weapon.ContinuousFire ();
 		}
 	}
