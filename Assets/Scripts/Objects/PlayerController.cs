@@ -6,17 +6,14 @@ using System.Collections.Generic;
 
 public class PlayerController : Ship {
 
-	public Text healthValueText;
-	public Slider healthSlider;
-	public Text shieldValueText;
-	public Slider shieldSlider;
-	public Text engineValueText;
-	public Slider engineShieldSlider;
+	public UISliderText healthUI;
+	public UISliderText shieldUI;
+	public UISliderText engineUI;
 
 	public int objectAvoidanceFactorScore = 1;
 	public LayerMask objectAvoidanceMask;
 
-	private float engineShieldSliderStep;
+	private float engineUISliderStep;
 	//private Dictionary<GameObject, int> objectAvoidanceDic = new Dictionary<GameObject, int> ();
 
 	private const float MIN_PERCENTAGE = 0f, MAX_PERCENTAGE = 100f;
@@ -30,22 +27,22 @@ public class PlayerController : Ship {
 	}
 
 	void ConfigureHUD () {
-		healthSlider.minValue = LifeShieldManager.MIN_LIFE_POINTS;
-		healthSlider.maxValue = life.lifeCapacity;
+		healthUI.slider.minValue = LifeShieldManager.MIN_LIFE_POINTS;
+		healthUI.slider.maxValue = life.lifeCapacity;
 
-		shieldSlider.minValue = LifeShieldManager.MIN_SHIELD_POINTS;
-		shieldSlider.maxValue = life.shieldMaxCapacity;
+		shieldUI.slider.minValue = LifeShieldManager.MIN_SHIELD_POINTS;
+		shieldUI.slider.maxValue = life.shieldMaxCapacity;
 
-		engineShieldSlider.minValue = MIN_PERCENTAGE;
-		engineShieldSlider.maxValue = Mathf.Round (MAX_PERCENTAGE * SLIDER_FILL_BAR_HEIGTH / engineShieldSlider.GetComponent<RectTransform> ().rect.height);
-		engineShieldSliderStep = MAX_PERCENTAGE / engineShieldSlider.maxValue;
+		engineUI.slider.minValue = MIN_PERCENTAGE;
+		engineUI.slider.maxValue = Mathf.Round (MAX_PERCENTAGE * SLIDER_FILL_BAR_HEIGTH / engineUI.slider.GetComponent<RectTransform> ().rect.height);
+		engineUISliderStep = MAX_PERCENTAGE / engineUI.slider.maxValue;
 	}
 
 	public void AdjustShieldEngine (float value) {
-		float shieldCapacityPercentage = (engineShieldSlider.maxValue - value) * engineShieldSliderStep;
+		float shieldCapacityPercentage = (engineUI.slider.maxValue - value) * engineUISliderStep;
 		life.ShieldCapacityPercentage = shieldCapacityPercentage;
 
-		float speedPercentage = value * engineShieldSliderStep;
+		float speedPercentage = value * engineUISliderStep;
 		engine.SpeedPercentage = speedPercentage;
 	}
 
@@ -92,14 +89,14 @@ public class PlayerController : Ship {
 	 */
 	void UpdateHUD () {
 		float lifePoints = life.LifePoints;
-		healthValueText.text = lifePoints.ToString("000");
-		healthSlider.value = lifePoints;
+		healthUI.valueText.text = lifePoints.ToString("000");
+		healthUI.slider.value = lifePoints;
 
-		shieldValueText.text = "%" + life.ShieldPointsPercentage.ToString("000");
-		shieldSlider.value = life.ShieldPoints;
+		shieldUI.valueText.text = "%" + life.ShieldPointsPercentage.ToString("000");
+		shieldUI.slider.value = life.ShieldPoints;
 
 		float speedPercentage = engine.RealSpeedPercentage ();
-		engineValueText.text = "%" + speedPercentage.ToString ("000");
+		engineUI.valueText.text = "%" + speedPercentage.ToString ("000");
 	}
 
 	// TODO : the closer has been the player to the other collider the more point he/she gains

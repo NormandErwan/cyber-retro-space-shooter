@@ -35,6 +35,7 @@ public class WeaponManager : MonoBehaviour {
 	 */
 	void Fire () {
 		GameObject weapon = weapons [nextWeaponIndex];
+		nextWeaponIndex = ++nextWeaponIndex % weapons.Length;
 
 		GameObject concreteMunition = Instantiate<GameObject> (munition);
 		concreteMunition.transform.position = weapon.transform.position + munition.transform.position;
@@ -45,7 +46,6 @@ public class WeaponManager : MonoBehaviour {
 		concreteMunition.GetComponent<Rigidbody> ().AddForce (munitionFireForce, ForceMode.VelocityChange);
 
 		//StartCoroutine (DisableFireEffects (nextWeaponIndex));
-		nextWeaponIndex = ++nextWeaponIndex % weapons.Length;
 	}
 
 	/*
