@@ -9,6 +9,7 @@ public class PlayerController : Ship {
 	public UISliderText healthUI;
 	public UISliderText shieldUI;
 	public UISliderText engineUI;
+	public GameOverManager gameOverManager;
 
 	public int objectAvoidanceFactorScore = 1;
 	public LayerMask objectAvoidanceMask;
@@ -63,7 +64,9 @@ public class PlayerController : Ship {
 	 * Move the player's ship.
 	 */
 	protected override void Move () {
-		engine.Move ();
+		if (life.LifePoints > LifeShieldManager.MIN_LIFE_POINTS) {
+			engine.Move ();
+		}
 	}
 
 	/*
@@ -72,8 +75,8 @@ public class PlayerController : Ship {
 	protected override void LifeObserver () {
 		UpdateHUD ();
 
-		if (life.LifePoints == LifeShieldManager.MIN_LIFE_POINTS) {
-			Debug.Log ("Game Over");
+		if (life.LifePoints <= LifeShieldManager.MIN_LIFE_POINTS) {
+			gameOverManager.GameOver ();
 		}
 	}
 
