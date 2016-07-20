@@ -76,7 +76,8 @@ public class LifeShieldManager : Observable {
 	 * After a delay, recharge the shield at a shield rate. Should be called every frame by Update().
 	 */
 	void RechargeShield () {
-		if (shieldPoints >= shieldCapacity) {
+		if (shieldPoints >= shieldCapacity 
+			|| lifePoints <= MIN_LIFE_POINTS) { // Don't recharge if the player is dead
 			return;
 		} else if (shieldRechargeTimer < shieldRechargeSecondsDelay) {
 			shieldRechargeTimer += Time.deltaTime;
