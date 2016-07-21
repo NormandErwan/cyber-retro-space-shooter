@@ -38,8 +38,10 @@ public class WeaponManager : MonoBehaviour {
 		nextWeaponIndex = ++nextWeaponIndex % weapons.Length;
 
 		GameObject concreteMunition = Instantiate<GameObject> (munition);
-		concreteMunition.transform.position = weapon.transform.position + munition.transform.position;
-		concreteMunition.transform.rotation = weapon.transform.rotation;
+		concreteMunition.transform.SetParent (weapon.transform);
+		concreteMunition.transform.localPosition = munition.transform.position;
+		concreteMunition.transform.localRotation = Quaternion.identity;
+		concreteMunition.transform.SetParent (null);
 
 		Vector3 munitionFireForce = GetComponent<Rigidbody> ().velocity 
 			+ weapon.transform.forward * concreteMunition.GetComponent<MunitionController> ().fireVelocity;
