@@ -3,10 +3,9 @@ using System.Collections;
 
 public class EngineManager : Observable {
 
-	public float minSpeed, maxSpeed;
+	public float minSpeed, maxSpeed, accelerationFactor, brakeFactor;
 
 	private float speed, speedPercentage;
-	private float lastRealSpeedPercentage;
 	private Rigidbody rigidBody;
 
 	private const float MIN_PERCENTAGE = 0, MAX_PERCENTAGE = 100;
@@ -15,15 +14,6 @@ public class EngineManager : Observable {
 		rigidBody = GetComponent<Rigidbody> ();
 
 		ConfigurateSpeed ();
-	}
-
-	void FixedUpdate () {
-		// Real speed is changing
-		float realSpeedPercentage = RealSpeedPercentage();
-		if (realSpeedPercentage != lastRealSpeedPercentage) {
-			realSpeedPercentage = lastRealSpeedPercentage;
-			NotifyObservers ();
-		}
 	}
 
 	void ConfigurateSpeed () {
@@ -53,13 +43,25 @@ public class EngineManager : Observable {
 	}
 
 	public float RealSpeedPercentage () {
-		float realSpeed = Mathf.Round(rigidBody.velocity.magnitude) * rigidBody.mass;
+		float realSpeed = rigidBody.velocity.magnitude / Time.fixedDeltaTime;
 		float realSpeedPercentage = (realSpeed - minSpeed) / (maxSpeed - minSpeed) * MAX_PERCENTAGE;
 		realSpeedPercentage = Mathf.Max(realSpeedPercentage, MIN_PERCENTAGE);
 		return realSpeedPercentage;
 	}
 
 	public void Move () {
-		rigidBody.AddForce (transform.forward * speed, ForceMode.Force);
+		float realSpeed = rigidBody.velocity.magnitude / Time.fixedDeltaTime;
+		if (realSpeed == speed) {
+			return;
+		}
+
+		print (realSpeed + " " + speed);
+		Vector3 engineForce = transform.forward * speed * Time.fixedDeltaTime;
+		if (realSpeed < speed) {
+			rigidBody.AddForce (engineForce * accelerationFactor, ForceMode.Force);
+		} else if (realSpeed > speed) {
+			rigidBody.AddForce (-engineForce * brakeFactor, ForceMode.Force);
+		}
+		NotifyObservers ();
 	}
 }
