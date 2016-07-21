@@ -31,6 +31,9 @@ public class DebrisController : SpaceObject {
 
 		transform.parent = parent;
 
+		// Random orientation
+		transform.rotation = Random.rotation;
+
 		// Random life points
 		life.LifePoints *= Mathf.Max(Mathf.RoundToInt(randomScale.magnitude), life.LifePoints);
 
@@ -39,7 +42,7 @@ public class DebrisController : SpaceObject {
 
 		// Random velocity
 		rigidbody.AddForce (speedForce + Random.insideUnitSphere * speedVariablity, ForceMode.VelocityChange);
-		rigidbody.AddTorque (Random.insideUnitSphere * maxRandomTumble * rigidbody.mass, ForceMode.Impulse);
+		rigidbody.AddTorque (Random.insideUnitSphere * maxRandomTumble, ForceMode.VelocityChange);
 	}
 
 	/*
