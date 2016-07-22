@@ -39,10 +39,12 @@ public class EngineManager : MonoBehaviour {
 	/*
 	 * Return the measured speed of the rigidbody.
 	 */
-	public float RealSpeedPercentage () {
+	public float RealSpeedPercentage (bool showNegativeValues = false) {
 		float realSpeed = rigidBody.velocity.magnitude / Time.fixedDeltaTime;
-		float realSpeedPercentage = (realSpeed - minSpeed) / (maxSpeed - minSpeed) * MAX_PERCENTAGE;
-		realSpeedPercentage = Mathf.Ceil(Mathf.Max(realSpeedPercentage, MIN_PERCENTAGE));
+		float realSpeedPercentage = Mathf.Ceil((realSpeed - minSpeed) / (maxSpeed - minSpeed) * MAX_PERCENTAGE);
+		if (!showNegativeValues) {
+			realSpeedPercentage = Mathf.Max (realSpeedPercentage, MIN_PERCENTAGE);
+		}
 		return realSpeedPercentage;
 	}
 
@@ -50,7 +52,7 @@ public class EngineManager : MonoBehaviour {
 	 * Apply a force on the rigidbody to adjust its speed on the desired speed.
 	 */
 	public void Move () {
-		float realSpeedPercentage = RealSpeedPercentage ();
+		float realSpeedPercentage = RealSpeedPercentage (true);
 		float speedPercentageCeil = Mathf.Ceil (speedPercentage);
 
 		if (realSpeedPercentage == speedPercentageCeil) {
