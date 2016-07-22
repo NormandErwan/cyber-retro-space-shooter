@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class LifeShieldManager : Observable {
+public class LifeShieldManager : MonoBehaviour {
 
 	// Life parameters.
 	public float lifeCapacity = 1f;
@@ -10,6 +10,10 @@ public class LifeShieldManager : Observable {
 	public float shieldMaxCapacity = 1f;
 	public float shieldRechargeSecondsDelay = 1f;
 	public float shieldRechargeRatePerSecond = 0.5f;
+
+	// Called after the life or shield points has been updated.
+	public delegate void LifeShieldUpdatedDelegate();
+	public event LifeShieldUpdatedDelegate OnLifeShieldUpdated;
 
 	private float lifePoints;
 	private float shieldPoints, shieldCapacity, shieldPointsPercentage;
@@ -74,7 +78,9 @@ public class LifeShieldManager : Observable {
 		float lifeDamages = Mathf.Min(lifePoints, damageAmount - shieldDamages);
 		lifePoints -= lifeDamages;
 
-		NotifyObservers ();
+		if (OnLifeShieldUpdated != null) {
+			OnLifeShieldUpdated ();
+		}
 	}
 
 	/*
@@ -99,7 +105,9 @@ public class LifeShieldManager : Observable {
 		float newShieldPoints = shieldPoints + Mathf.Min(shieldRechargeRatePerSecond * Time.deltaTime, shieldCapacity - shieldPoints);
 		AdjustShieldPoints (newShieldPoints);
 
-		NotifyObservers ();
+		if (OnLifeShieldUpdated != null) {
+			OnLifeShieldUpdated ();
+		}
 	}
 
 	/*
@@ -121,7 +129,9 @@ public class LifeShieldManager : Observable {
 		}
 		shieldCapacity = newShieldCapacity;
 
-		NotifyObservers ();
+		if (OnLifeShieldUpdated != null) {
+			OnLifeShieldUpdated ();
+		}
 	}
 
 	/*

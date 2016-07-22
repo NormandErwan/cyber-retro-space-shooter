@@ -10,14 +10,14 @@ public abstract class Ship : SpaceObject {
 
 	private UnityEvent engineEvents;
 
+	protected override void Awake () {
+		engine.OnSpeedUpdated += OnSpeedUpdated;
+	}
+
 	protected override void Start () {
 		base.Start ();
 
-		engineEvents = new UnityEvent();
-		engineEvents.AddListener (EngineObserver);
-		engine.AddObserver (engineEvents);
-
-		EngineObserver (); // Init the EngineController info in the HUD
+		OnSpeedUpdated (); // Init the EngineController info in the HUD
 	}
 
 	protected virtual void FixedUpdate () {
@@ -32,5 +32,5 @@ public abstract class Ship : SpaceObject {
 	/*
 	 * Manage the notifications of the EngineController.
 	 */
-	protected abstract void EngineObserver ();
+	protected abstract void OnSpeedUpdated ();
 }

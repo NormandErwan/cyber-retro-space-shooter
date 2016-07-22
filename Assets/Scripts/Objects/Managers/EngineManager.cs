@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EngineManager : Observable {
+public class EngineManager : MonoBehaviour {
 
 	public float minSpeed, maxSpeed, accelerationFactor, brakeFactor;
+
+	// Called after the speed has been updated.
+	public delegate void SpeedUpdatedDelegate();
+	public event SpeedUpdatedDelegate OnSpeedUpdated;
 
 	private float speed, speedPercentage;
 	private Rigidbody rigidBody;
@@ -51,7 +55,9 @@ public class EngineManager : Observable {
 			rigidBody.AddForce (-engineForce * brakeFactor, ForceMode.Force);
 		}
 
-		NotifyObservers ();
+		if (OnSpeedUpdated != null) {
+			OnSpeedUpdated ();
+		}
 	}
 
 	/*
@@ -78,6 +84,8 @@ public class EngineManager : Observable {
 		this.speedPercentage = speedPercentage;
 		speed = speedPercentage * (maxSpeed - minSpeed) / MAX_PERCENTAGE + minSpeed;
 
-		NotifyObservers ();
+		if (OnSpeedUpdated != null) {
+			OnSpeedUpdated ();
+		}
 	}
 }

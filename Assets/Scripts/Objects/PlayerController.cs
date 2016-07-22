@@ -84,7 +84,7 @@ public class PlayerController : Ship {
 	/*
 	 * Update the HUD when the life or the shield have been changed, or invoke the game over when life points drop to zero.
 	 */
-	protected override void LifeObserver () {
+	protected override void OnLifeShieldUpdated () {
 		UpdateHUD ();
 
 		if (lifeShieldManager.LifePoints <= LifeShieldManager.MIN_LIFE_POINTS) {
@@ -95,7 +95,7 @@ public class PlayerController : Ship {
 	/*
 	 * Update the HUD when the speed has been changed.
 	 */
-	protected override void EngineObserver () {
+	protected override void OnSpeedUpdated () {
 		UpdateHUD ();
 	}
 

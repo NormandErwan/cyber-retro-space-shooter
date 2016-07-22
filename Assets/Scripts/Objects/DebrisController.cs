@@ -47,7 +47,7 @@ public class DebrisController : SpaceObject {
 	/*
 	 * Update score and destroy when life points drops to zero.
 	 */
-	protected override void LifeObserver () {
+	protected override void OnLifeShieldUpdated () {
 		if (lifeShieldManager.LifePoints == LifeShieldManager.MIN_LIFE_POINTS) {
 			scoreManager.Score += scoreValue;
 			Destroy (gameObject);

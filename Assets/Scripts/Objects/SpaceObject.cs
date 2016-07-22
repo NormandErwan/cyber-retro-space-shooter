@@ -14,22 +14,19 @@ public abstract class SpaceObject : MonoBehaviour {
 	private Queue<float> collisionDamages = new Queue<float> ();
 
 	protected virtual void Awake () {
-		lifeEvents = new UnityEvent();
-		lifeEvents.AddListener (LifeObserver);
-		print (lifeShieldManager);
-		lifeShieldManager.AddObserver (lifeEvents);
+		lifeShieldManager.OnLifeShieldUpdated += OnLifeShieldUpdated;
 	}
 
 	protected virtual void Start () {
 		scoreManager = GameObject.FindGameObjectWithTag ("ScoreManager").GetComponent<ScoreManager> ();
 
-		LifeObserver(); // Init the LifeController info in the HUD
+		OnLifeShieldUpdated(); // Init the LifeController info in the HUD
 	}
 
 	/*
 	 * Manage the notifications of the LifeController.
 	 */
-	protected abstract void LifeObserver ();
+	protected abstract void OnLifeShieldUpdated ();
 
 
 	/*
