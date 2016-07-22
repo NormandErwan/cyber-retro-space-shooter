@@ -20,10 +20,6 @@ public abstract class Ship : SpaceObject {
 		EngineObserver (); // Init the EngineController info in the HUD
 	}
 
-	protected virtual void Update () {
-		WeaponFire ();
-	}
-
 	protected virtual void FixedUpdate () {
 		Move ();
 	}
@@ -32,11 +28,6 @@ public abstract class Ship : SpaceObject {
 	 * Move the ship.
 	 */
 	protected abstract void Move ();
-
-	/*
-	 * Fire with the weapon.
-	 */
-	protected abstract void WeaponFire ();
 
 	/*
 	 * Manage the notifications of the EngineController.

@@ -3,22 +3,21 @@ using System.Collections;
 
 public class DebrisController : SpaceObject {
 
+	// Configuration parameters.
 	public float minRandomScale;
 	public float maxRandomScale;
-	public float scaleAxisVariability;
+	public float scaleAxisVariability; // Allow non-uniform scale along axis.
 	public float speedVariablity;
 	public float maxRandomTumble;
 
+	// The player scores points when he/she destroys the debris.
 	public int scoreValue = 1;
 
-	private Vector3 speedForce;
-
-	public Vector3 SpeedForce {
-		get { return speedForce; }
-		set { speedForce = value; }
-	}
-
-	public void ConfigurateDebris () {
+	/*
+	 * Compute a random scale, random orientation, a mass, life points and a random velocity.
+	 * Should be called at the instantiation of the debris.
+	 */
+	public void ConfigurateDebris (Vector3 speed) {
 		Rigidbody rigidbody = GetComponent<Rigidbody> ();
 
 		// Random scale
@@ -35,21 +34,21 @@ public class DebrisController : SpaceObject {
 		transform.rotation = Random.rotation;
 
 		// Random life points
-		life.LifePoints *= Mathf.Max(Mathf.RoundToInt(randomScale.magnitude), life.LifePoints);
+		lifeShieldManager.LifePoints *= Mathf.Max(Mathf.RoundToInt(randomScale.magnitude), lifeShieldManager.LifePoints);
 
 		// Random mass
 		rigidbody.mass *= randomScale.magnitude;
 
 		// Random velocity
-		rigidbody.AddForce (speedForce + Random.insideUnitSphere * speedVariablity, ForceMode.VelocityChange);
+		rigidbody.AddForce (speed + Random.insideUnitSphere * speedVariablity, ForceMode.VelocityChange);
 		rigidbody.AddTorque (Random.insideUnitSphere * maxRandomTumble, ForceMode.VelocityChange);
 	}
 
 	/*
-	 * Manage the notifications of the LifeController.
+	 * Update score and destroy when life points drops to zero.
 	 */
 	protected override void LifeObserver () {
-		if (life.LifePoints == LifeShieldManager.MIN_LIFE_POINTS) {
+		if (lifeShieldManager.LifePoints == LifeShieldManager.MIN_LIFE_POINTS) {
 			scoreManager.Score += scoreValue;
 			Destroy (gameObject);
 		}

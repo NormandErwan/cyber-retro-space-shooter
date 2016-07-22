@@ -12,6 +12,7 @@ public class PlayerController : Ship {
 	public Slider engineShieldSlider;
 	public GameOverManager gameOverManager;
 
+	// The player scores when he/she gets close to space objects without hitting them.
 	public int objectAvoidanceFactorScore = 1;
 	public LayerMask objectAvoidanceMask;
 
@@ -34,12 +35,15 @@ public class PlayerController : Ship {
 		AdjustEngineShield (engineShieldSlider.value); // Force a first update of the HUD
 	}
 
+	/*
+	 * Initialize the player's HUD elements.
+	 */
 	void ConfigureHUD () {
 		healthUI.slider.minValue = LifeShieldManager.MIN_LIFE_POINTS;
-		healthUI.slider.maxValue = life.lifeCapacity;
+		healthUI.slider.maxValue = lifeShieldManager.lifeCapacity;
 
 		shieldUI.slider.minValue = LifeShieldManager.MIN_SHIELD_POINTS;
-		shieldUI.slider.maxValue = life.ShieldCapacity;
+		shieldUI.slider.maxValue = lifeShieldManager.ShieldCapacity;
 
 		engineUI.slider.minValue = EngineManager.MIN_PERCENTAGE;
 		engineUI.slider.maxValue = engine.SpeedPercentage;
@@ -51,6 +55,9 @@ public class PlayerController : Ship {
 		engineShieldSliderStep = MAX_PERCENTAGE / engineShieldSlider.maxValue;
 	}
 
+	/*
+	 * Distributes the power between the shield capacity and the engine's speed.
+	 */
 	public void AdjustEngineShield (float percentage) {
 		// Calculate the shield and engine slider percentages
 		float shieldCapacityPercentage = (engineShieldSlider.maxValue - percentage) * engineShieldSliderStep;
@@ -61,45 +68,32 @@ public class PlayerController : Ship {
 		engineSliderRect.sizeDelta = new Vector2 (engineSliderRect.sizeDelta.x, engineShieldSliderRectHeight * speedPercentage / MAX_PERCENTAGE);
 
 		// Adjust the slider values
-		life.ShieldCapacityPercentage = shieldCapacityPercentage;
+		lifeShieldManager.ShieldCapacityPercentage = shieldCapacityPercentage;
 		engine.SpeedPercentage = speedPercentage;
-	}
-
-	/*
-	 * Fire with the weapon when the user requests it.
-	 * TODO: use for debug on PC only, to remove.
-	 */
-	protected override void WeaponFire () {
-		if (Input.GetKeyDown (KeyCode.Space)) {
-			weapon.DiscreteFire ();
-		}
-		else if (Input.GetKey (KeyCode.Space)) {
-			weapon.ContinuousFire ();
-		}
 	}
 
 	/*
 	 * Move the player's ship.
 	 */
 	protected override void Move () {
-		if (life.LifePoints > LifeShieldManager.MIN_LIFE_POINTS) {
+		if (lifeShieldManager.LifePoints > LifeShieldManager.MIN_LIFE_POINTS) {
 			engine.Move ();
 		}
 	}
 
 	/*
-	 * Manage the notifications of the LifeController.
+	 * Update the HUD when the life or the shield have been changed, or invoke the game over when life points drop to zero.
 	 */
 	protected override void LifeObserver () {
 		UpdateHUD ();
 
-		if (life.LifePoints <= LifeShieldManager.MIN_LIFE_POINTS) {
+		if (lifeShieldManager.LifePoints <= LifeShieldManager.MIN_LIFE_POINTS) {
 			gameOverManager.GameOver ();
 		}
 	}
 
 	/*
-	 * Manage the notifications of the EngineController.
+	 * Update the HUD when the speed has been changed.
 	 */
 	protected override void EngineObserver () {
 		UpdateHUD ();
@@ -109,13 +103,13 @@ public class PlayerController : Ship {
 	 *  Update the player's HUD information.
 	 */
 	void UpdateHUD () {
-		float lifePoints = life.LifePoints;
+		float lifePoints = lifeShieldManager.LifePoints;
 		healthUI.valueText.text = lifePoints.ToString("000");
 		healthUI.slider.value = lifePoints;
 
-		shieldUI.valueText.text = "%" + life.ShieldPointsPercentage.ToString("000");
-		shieldUI.slider.value = life.ShieldPoints;
-		shieldUI.slider.maxValue = life.ShieldCapacity;
+		shieldUI.valueText.text = "%" + lifeShieldManager.ShieldPointsPercentage.ToString("000");
+		shieldUI.slider.value = lifeShieldManager.ShieldPoints;
+		shieldUI.slider.maxValue = lifeShieldManager.ShieldCapacity;
 
 		float realSpeedPercentage = engine.RealSpeedPercentage ();
 		engineUI.valueText.text = "%" + realSpeedPercentage.ToString ("000");
@@ -137,7 +131,7 @@ public class PlayerController : Ship {
 	}*/
 
 	void OnTriggerExit (Collider other) {
-		if (life.LifePoints > LifeShieldManager.MIN_LIFE_POINTS) {
+		if (lifeShieldManager.LifePoints > LifeShieldManager.MIN_LIFE_POINTS) {
 			if (Utilities.IsInLayerMask (other.gameObject.layer, objectAvoidanceMask)) {
 				scoreManager.Score += objectAvoidanceFactorScore; 
 				//scoreManager.Score += objectAvoidanceDic [other.gameObject];

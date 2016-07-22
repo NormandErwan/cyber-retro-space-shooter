@@ -9,7 +9,7 @@ public class WorldBorders : MonoBehaviour {
 	public LayerMask constrainedLayers;
 	public LayerMask cameraBorderLayerMask;
 
-	Vector3 bordersMin, bordersMax;
+	private Vector3 bordersMin, bordersMax;
 
 	class Border {
 		public string name;
@@ -38,6 +38,23 @@ public class WorldBorders : MonoBehaviour {
 	void Start () {
 		ConfigurateBorders ();
 		//SetupBorders ();
+	}
+
+	/*
+	 * Translate an object to the other side of the borders.
+	 */
+	public static void TranslateToOtherSide(Transform transform, GameObject other, Vector3 bordersMin, Vector3 bordersMax) {
+		Vector3 translation = Vector3.zero;
+		Vector3 otherPosition = other.transform.position;
+
+		for (int i = 0; i <= 2; i++) { // For each x,y,z axis
+			if (otherPosition [i] > bordersMax [i]) {
+				translation [i] -= transform.localScale [i];
+			} else if (otherPosition [i] < bordersMin [i]) {
+				translation [i] += transform.localScale [i];
+			}
+		}
+		other.transform.Translate (translation, Space.World);
 	}
 
 	/*
@@ -96,19 +113,5 @@ public class WorldBorders : MonoBehaviour {
 		if (Utilities.IsInLayerMask(other.gameObject.layer, constrainedLayers)) {
 			TranslateToOtherSide (transform, other.gameObject, bordersMin, bordersMax);
 		}
-	}
-
-	public static void TranslateToOtherSide(Transform transform, GameObject other, Vector3 bordersMin, Vector3 bordersMax) {
-		Vector3 translation = Vector3.zero;
-		Vector3 otherPosition = other.transform.position;
-
-		for (int i = 0; i <= 2; i++) { // For each x,y,z axis
-			if (otherPosition [i] > bordersMax [i]) {
-				translation [i] -= transform.localScale [i];
-			} else if (otherPosition [i] < bordersMin [i]) {
-				translation [i] += transform.localScale [i];
-			}
-		}
-		other.transform.Translate (translation, Space.World);
 	}
 }

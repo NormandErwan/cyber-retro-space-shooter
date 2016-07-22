@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public abstract class SpaceObject : MonoBehaviour {
 
-	public LifeShieldManager life; // TODO: rename to lifeShieldManager
+	public LifeShieldManager lifeShieldManager;
 
 	protected ScoreManager scoreManager;
 
@@ -16,7 +16,8 @@ public abstract class SpaceObject : MonoBehaviour {
 	protected virtual void Awake () {
 		lifeEvents = new UnityEvent();
 		lifeEvents.AddListener (LifeObserver);
-		life.AddObserver (lifeEvents);
+		print (lifeShieldManager);
+		lifeShieldManager.AddObserver (lifeEvents);
 	}
 
 	protected virtual void Start () {
@@ -44,6 +45,6 @@ public abstract class SpaceObject : MonoBehaviour {
 	 */
 	protected virtual void OnCollisionExit (Collision other) {
 		float damages = collisionDamages.Dequeue ();
-		life.Hit (damages);
+		lifeShieldManager.Hit (damages);
 	}
 }

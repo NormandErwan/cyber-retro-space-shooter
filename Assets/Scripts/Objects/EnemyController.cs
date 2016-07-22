@@ -8,13 +8,6 @@ public class EnemyController : Ship {
 	public int scoreValue = 1;
 
 	/*
-	 * Fire with the weapon.
-	 */
-	protected override void WeaponFire () {
-		// TODO
-	}
-
-	/*
 	 * Move the ship.
 	 */
 	protected override void Move () {
@@ -25,7 +18,7 @@ public class EnemyController : Ship {
 	 * Manage the notifications of the LifeController.
 	 */
 	protected override void LifeObserver () {
-		if (life.LifePoints == LifeShieldManager.MIN_LIFE_POINTS) {
+		if (lifeShieldManager.LifePoints == LifeShieldManager.MIN_LIFE_POINTS) {
 			scoreManager.Score += scoreValue;
 			Destroy (gameObject);
 		}

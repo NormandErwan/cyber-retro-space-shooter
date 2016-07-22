@@ -3,8 +3,10 @@ using System.Collections;
 
 public class LifeShieldManager : Observable {
 
+	// Life parameters.
 	public float lifeCapacity = 1f;
 
+	// Shield parameters.
 	public float shieldMaxCapacity = 1f;
 	public float shieldRechargeSecondsDelay = 1f;
 	public float shieldRechargeRatePerSecond = 0.5f;
@@ -25,34 +27,33 @@ public class LifeShieldManager : Observable {
 		RechargeShield ();
 	}
 
-	void Configurate () {
-		lifePoints = lifeCapacity;
-		shieldPoints = shieldCapacity = shieldMaxCapacity;
-		shieldPointsPercentage = MAX_PERCENTAGE;
-	}
-
 	/*
-	 * Life points getter.
+	 * Getters / Setters.
 	 */
 	public float LifePoints {
 		get { return lifePoints; }
 		set { lifeCapacity = lifePoints = value; }
 	}
-
 	public float ShieldPoints {
 		get { return shieldPoints; }
 	}
-
 	public float ShieldCapacity {
 		get { return shieldCapacity; }
 	}
-
 	public float ShieldPointsPercentage {
 		get { return shieldPointsPercentage; }
 	}
-
 	public float ShieldCapacityPercentage {
 		set { AdjustShield (value); }
+	}
+
+	/*
+	 * Init the life and shield points to their maximum capacity.
+	 */
+	void Configurate () {
+		lifePoints = lifeCapacity;
+		shieldPoints = shieldCapacity = shieldMaxCapacity;
+		shieldPointsPercentage = MAX_PERCENTAGE;
 	}
 
 	/*
@@ -74,6 +75,13 @@ public class LifeShieldManager : Observable {
 		lifePoints -= lifeDamages;
 
 		NotifyObservers ();
+	}
+
+	/*
+	 * Drops the life and shield points to zero.
+	 */
+	public void Die () {
+		Hit (shieldPoints + lifePoints);
 	}
 
 	/*
