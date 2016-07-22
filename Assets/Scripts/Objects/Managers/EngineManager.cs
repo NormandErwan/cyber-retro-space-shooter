@@ -11,6 +11,7 @@ public class EngineManager : MonoBehaviour {
 
 	private float speed, speedPercentage;
 	private Rigidbody rigidBody;
+	private bool speedUpdated = false;
 
 	public const float MIN_PERCENTAGE = 0, MAX_PERCENTAGE = 100;
 
@@ -18,6 +19,13 @@ public class EngineManager : MonoBehaviour {
 		rigidBody = GetComponent<Rigidbody> ();
 		
 		ConfigurateSpeed ();
+	}
+
+	void LateUpdate () {
+		if (OnSpeedUpdated != null && speedUpdated == true) {
+			speedUpdated = false;
+			OnSpeedUpdated ();
+		}
 	}
 
 	/*
@@ -34,30 +42,27 @@ public class EngineManager : MonoBehaviour {
 	public float RealSpeedPercentage () {
 		float realSpeed = rigidBody.velocity.magnitude / Time.fixedDeltaTime;
 		float realSpeedPercentage = (realSpeed - minSpeed) / (maxSpeed - minSpeed) * MAX_PERCENTAGE;
-		realSpeedPercentage = Mathf.Max(realSpeedPercentage, MIN_PERCENTAGE);
+		realSpeedPercentage = Mathf.Round(Mathf.Max(realSpeedPercentage, MIN_PERCENTAGE));
 		return realSpeedPercentage;
 	}
 
 	/*
 	 * Apply a force on the rigidbody to adjust its speed on the desired speed.
 	 */
-	public void Move () { 
-		// TODO : compare with percentages not speeds
-		float realSpeed = rigidBody.velocity.magnitude / Time.fixedDeltaTime;
-		if (realSpeed == speed) {
+	public void Move () {
+		float realSpeedPercentage = RealSpeedPercentage ();
+		if (realSpeedPercentage == speedPercentage) {
 			return;
 		}
 
 		Vector3 engineForce = transform.forward * speed * Time.fixedDeltaTime;
-		if (realSpeed < speed) {
+		if (realSpeedPercentage < speedPercentage) {
 			rigidBody.AddForce (engineForce * accelerationFactor, ForceMode.Force);
-		} else if (realSpeed > speed) {
+		} else if (realSpeedPercentage > speedPercentage) {
 			rigidBody.AddForce (-engineForce * brakeFactor, ForceMode.Force);
 		}
 
-		if (OnSpeedUpdated != null) {
-			OnSpeedUpdated ();
-		}
+		speedUpdated = true;
 	}
 
 	/*
@@ -84,8 +89,6 @@ public class EngineManager : MonoBehaviour {
 		this.speedPercentage = speedPercentage;
 		speed = speedPercentage * (maxSpeed - minSpeed) / MAX_PERCENTAGE + minSpeed;
 
-		if (OnSpeedUpdated != null) {
-			OnSpeedUpdated ();
-		}
+		speedUpdated = true;
 	}
 }
