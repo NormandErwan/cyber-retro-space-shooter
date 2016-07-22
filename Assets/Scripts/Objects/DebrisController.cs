@@ -7,7 +7,7 @@ public class DebrisController : SpaceObject {
 	public float minRandomScale;
 	public float maxRandomScale;
 	public float scaleAxisVariability; // Allow non-uniform scale along axis.
-	public float speedVariablity;
+	public float velocityVariablity;
 	public float maxRandomTumble;
 
 	// The player scores points when he/she destroys the debris.
@@ -17,7 +17,7 @@ public class DebrisController : SpaceObject {
 	 * Compute a random scale, random orientation, a mass, life points and a random velocity.
 	 * Should be called at the instantiation of the debris.
 	 */
-	public void ConfigurateDebris (Vector3 speed) {
+	public void ConfigurateDebris (Vector3 velocity) {
 		Rigidbody rigidbody = GetComponent<Rigidbody> ();
 
 		// Random scale
@@ -40,7 +40,7 @@ public class DebrisController : SpaceObject {
 		rigidbody.mass *= randomScale.magnitude;
 
 		// Random velocity
-		rigidbody.AddForce (speed + Random.insideUnitSphere * speedVariablity, ForceMode.VelocityChange);
+		rigidbody.AddForce (velocity + Random.insideUnitSphere * velocityVariablity, ForceMode.VelocityChange);
 		rigidbody.AddTorque (Random.insideUnitSphere * maxRandomTumble, ForceMode.VelocityChange);
 	}
 
