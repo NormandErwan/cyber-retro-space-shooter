@@ -42,7 +42,7 @@ public class EngineManager : MonoBehaviour {
 	public float RealSpeedPercentage () {
 		float realSpeed = rigidBody.velocity.magnitude / Time.fixedDeltaTime;
 		float realSpeedPercentage = (realSpeed - minSpeed) / (maxSpeed - minSpeed) * MAX_PERCENTAGE;
-		realSpeedPercentage = Mathf.Round(Mathf.Max(realSpeedPercentage, MIN_PERCENTAGE));
+		realSpeedPercentage = Mathf.Ceil(Mathf.Max(realSpeedPercentage, MIN_PERCENTAGE));
 		return realSpeedPercentage;
 	}
 
@@ -51,14 +51,16 @@ public class EngineManager : MonoBehaviour {
 	 */
 	public void Move () {
 		float realSpeedPercentage = RealSpeedPercentage ();
-		if (realSpeedPercentage == speedPercentage) {
+		float speedPercentageCeil = Mathf.Ceil (speedPercentage);
+
+		if (realSpeedPercentage == speedPercentageCeil) {
 			return;
 		}
 
 		Vector3 engineForce = transform.forward * speed * Time.fixedDeltaTime;
-		if (realSpeedPercentage < speedPercentage) {
+		if (realSpeedPercentage < speedPercentageCeil) {
 			rigidBody.AddForce (engineForce * accelerationFactor, ForceMode.Force);
-		} else if (realSpeedPercentage > speedPercentage) {
+		} else if (realSpeedPercentage > speedPercentageCeil) {
 			rigidBody.AddForce (-engineForce * brakeFactor, ForceMode.Force);
 		}
 
