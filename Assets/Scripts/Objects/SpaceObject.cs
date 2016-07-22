@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public abstract class SpaceObject : MonoBehaviour {
 
-	public LifeShieldManager life;
+	public LifeShieldManager life; // TODO: rename to lifeShieldManager
 
 	protected ScoreManager scoreManager;
 

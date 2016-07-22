@@ -8,11 +8,11 @@ public class EngineManager : Observable {
 	private float speed, speedPercentage;
 	private Rigidbody rigidBody;
 
-	private const float MIN_PERCENTAGE = 0, MAX_PERCENTAGE = 100;
+	public const float MIN_PERCENTAGE = 0, MAX_PERCENTAGE = 100;
 
 	void Awake () {
 		rigidBody = GetComponent<Rigidbody> ();
-
+		
 		ConfigurateSpeed ();
 	}
 
@@ -49,13 +49,13 @@ public class EngineManager : Observable {
 		return realSpeedPercentage;
 	}
 
-	public void Move () {
+	public void Move () { 
+		// TODO : compare with percentages not speeds
 		float realSpeed = rigidBody.velocity.magnitude / Time.fixedDeltaTime;
 		if (realSpeed == speed) {
 			return;
 		}
-
-		print (realSpeed + " " + speed);
+		
 		Vector3 engineForce = transform.forward * speed * Time.fixedDeltaTime;
 		if (realSpeed < speed) {
 			rigidBody.AddForce (engineForce * accelerationFactor, ForceMode.Force);

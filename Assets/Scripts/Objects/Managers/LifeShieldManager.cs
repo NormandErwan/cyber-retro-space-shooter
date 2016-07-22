@@ -43,6 +43,10 @@ public class LifeShieldManager : Observable {
 		get { return shieldPoints; }
 	}
 
+	public float ShieldCapacity {
+		get { return shieldCapacity; }
+	}
+
 	public float ShieldPointsPercentage {
 		get { return shieldPointsPercentage; }
 	}
