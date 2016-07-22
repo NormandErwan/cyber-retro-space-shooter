@@ -11,12 +11,12 @@ public abstract class Ship : SpaceObject {
 	private UnityEvent engineEvents;
 
 	protected override void Awake () {
+		base.Awake ();
 		engine.OnSpeedUpdated += OnSpeedUpdated;
 	}
 
 	protected override void Start () {
 		base.Start ();
-
 		OnSpeedUpdated (); // Init the EngineController info in the HUD
 	}
 
