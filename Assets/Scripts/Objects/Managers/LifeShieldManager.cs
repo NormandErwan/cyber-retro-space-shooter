@@ -18,6 +18,7 @@ public class LifeShieldManager : MonoBehaviour {
 	private float lifePoints;
 	private float shieldPoints, shieldCapacity, shieldPointsPercentage;
 	private float shieldRechargeTimer = 0f;
+	private bool lifeShieldUpdate = false;
 
 	public const float MIN_LIFE_POINTS = 0f;
 	public const float MIN_SHIELD_POINTS = 0f;
@@ -29,6 +30,13 @@ public class LifeShieldManager : MonoBehaviour {
 
 	void Update () {
 		RechargeShield ();
+	}
+
+	void LateUpdate () {
+		if (OnLifeShieldUpdated != null && lifeShieldUpdate == true) {
+			lifeShieldUpdate = false;
+			OnLifeShieldUpdated ();
+		}
 	}
 
 	/*
@@ -78,9 +86,7 @@ public class LifeShieldManager : MonoBehaviour {
 		float lifeDamages = Mathf.Min(lifePoints, damageAmount - shieldDamages);
 		lifePoints -= lifeDamages;
 
-		if (OnLifeShieldUpdated != null) {
-			OnLifeShieldUpdated ();
-		}
+		lifeShieldUpdate = true;
 	}
 
 	/*
@@ -105,9 +111,7 @@ public class LifeShieldManager : MonoBehaviour {
 		float newShieldPoints = shieldPoints + Mathf.Min(shieldRechargeRatePerSecond * Time.deltaTime, shieldCapacity - shieldPoints);
 		AdjustShieldPoints (newShieldPoints);
 
-		if (OnLifeShieldUpdated != null) {
-			OnLifeShieldUpdated ();
-		}
+		lifeShieldUpdate = true;
 	}
 
 	/*
@@ -129,9 +133,7 @@ public class LifeShieldManager : MonoBehaviour {
 		}
 		shieldCapacity = newShieldCapacity;
 
-		if (OnLifeShieldUpdated != null) {
-			OnLifeShieldUpdated ();
-		}
+		lifeShieldUpdate = true;
 	}
 
 	/*
