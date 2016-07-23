@@ -9,7 +9,7 @@ public abstract class SpaceObject : MonoBehaviour {
 	protected ScoreManager scoreManager;
 	protected Rigidbody rigidBody;
 
-	private float damageFactor = 0.02f;
+	private float damageFactor = 0.01f;
 	private UnityEvent lifeEvents;
 
 	protected virtual void Awake () {
