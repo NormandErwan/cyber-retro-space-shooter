@@ -4,7 +4,7 @@ using System.Collections;
 
 public class GameOverManager : MonoBehaviour {
 
-	public Animator gameOverAnimator;
+	public Animator playerHUDAnimator;
 	public float canRestartLevelDelay;
 
 	private bool gameOver = false;
@@ -23,7 +23,7 @@ public class GameOverManager : MonoBehaviour {
 				restartLevelTimer += Time.deltaTime;
 
 				if (restartLevelTimer >= canRestartLevelDelay) {
-					gameOverAnimator.SetTrigger ("TapToRestart");
+					playerHUDAnimator.SetTrigger ("TapToRestart");
 				}
 				return;
 			}
@@ -39,7 +39,7 @@ public class GameOverManager : MonoBehaviour {
 	 * Trigger the game over.
 	 */
 	public void GameOver () {
-		gameOverAnimator.SetTrigger ("GameOver");
+		playerHUDAnimator.SetTrigger ("GameOver");
 		gameOver = true;
 	}
 
