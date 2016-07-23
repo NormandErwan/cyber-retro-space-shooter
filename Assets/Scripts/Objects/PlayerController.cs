@@ -19,7 +19,6 @@ public class PlayerController : Ship {
 	private RectTransform shieldSliderRect, engineSliderRect;
 	private float engineShieldSliderRectHeight;
 	private float engineShieldSliderStep;
-	private Rigidbody rigidBody;
 	//private Dictionary<GameObject, int> objectAvoidanceDic = new Dictionary<GameObject, int> ();
 
 	private const float MIN_PERCENTAGE = 0f, MAX_PERCENTAGE = 100f;
@@ -32,7 +31,6 @@ public class PlayerController : Ship {
 		engineSliderRect = engineUI.slider.GetComponent<RectTransform> ();
 		engineShieldSliderRectHeight = engineShieldSlider.GetComponent<RectTransform> ().rect.height;
 
-		rigidBody = GetComponent<Rigidbody> ();
 		GetComponent<GvrHead> ().OnHeadUpdated += OnOrientationChanged;
 
 		ConfigureHUD ();

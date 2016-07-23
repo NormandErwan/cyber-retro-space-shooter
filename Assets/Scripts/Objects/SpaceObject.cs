@@ -8,12 +8,14 @@ public abstract class SpaceObject : MonoBehaviour {
 	public LifeShieldManager lifeShieldManager;
 
 	protected ScoreManager scoreManager;
+	protected Rigidbody rigidBody;
 
-	private float damageFactor = 0.0005f;
+	private float damageFactor = 0.01f;
 	private UnityEvent lifeEvents;
-	private Queue<float> collisionDamages = new Queue<float> ();
 
 	protected virtual void Awake () {
+		rigidBody = GetComponent<Rigidbody> ();
+
 		lifeShieldManager.OnLifeShieldUpdated += OnLifeShieldUpdated;
 	}
 
@@ -33,15 +35,9 @@ public abstract class SpaceObject : MonoBehaviour {
 	 * Save the damages due to collision.
 	 */
 	protected virtual void OnCollisionEnter (Collision other) {
-		float damages = other.impulse.magnitude * damageFactor;
-		collisionDamages.Enqueue (damages);
-	}
+		rigidBody.AddForce (other.impulse, ForceMode.Impulse);
 
-	/*
-	 * Takes the saved damages due to collision.
-	 */
-	protected virtual void OnCollisionExit (Collision other) {
-		float damages = collisionDamages.Dequeue ();
+		float damages = other.impulse.magnitude * damageFactor;
 		lifeShieldManager.Hit (damages);
 	}
 }
