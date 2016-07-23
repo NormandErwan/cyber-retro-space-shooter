@@ -38,6 +38,15 @@ public class PlayerController : Ship {
 	}
 
 	/*
+	 * Takes damages due to collision and play the hit animation.
+	 */
+	protected override void OnCollisionEnter (Collision other) {
+		base.OnCollisionEnter (other);
+
+		gameOverManager.PlayerHit();
+	}
+
+	/*
 	 * Keep the velocity vector aligned with the forward vector.
 	 */
 	void OnOrientationChanged (GameObject player) {

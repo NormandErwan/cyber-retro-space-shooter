@@ -36,7 +36,16 @@ public class GameOverManager : MonoBehaviour {
 	}
 
 	/*
-	 * Trigger the game over.
+	 * Play the player hit animation.
+	 */
+	public void PlayerHit () {
+		if (!gameOver) {
+			playerHUDAnimator.SetTrigger ("PlayerHit");
+		}
+	}
+
+	/*
+	 * Trigger the game over and play the game over animation.
 	 */
 	public void GameOver () {
 		playerHUDAnimator.SetTrigger ("GameOver");
