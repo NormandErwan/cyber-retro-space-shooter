@@ -14,42 +14,50 @@
 /// Thanks for bugfixes and improvements to Unity Forum User "Mistale"
 /// http://forum.unity3d.com/members/102350-Mistale
 ///
-Shader "VolumetricLine/VolumetricLineAdditive" {
-    Properties {
+Shader "VolumetricLine/VolumetricLineAdditive" 
+{
+    Properties 
+    {
         _MainTex ("Base (RGB)", 2D) = "white" {}
         _Color ("Main Color", Color) = (1,1,1,1)
+        _InnerColor ("Inner Color", Color) = (1,1,1,1)
         _LineWidth ("Line Width", Range(0.01, 100)) = 1.0
         _LineScale ("Line Scale", Float) = 1.0
         _LightSaberFactor ("LightSaberFactor", Range(0.0, 1.0)) = 0.9
     }
+
     SubShader {
-        Tags { "RenderType"="Geometry" "Queue" = "Transparent" }
+        Tags 
+        { 
+        	"RenderType"="Geometry" "Queue" = 
+        	"Transparent" 
+        }
         LOD 200
- 
+ 		
         Pass {
- 
             Cull Off 
             ZWrite Off
             ZTest LEqual
             Blend One One
             Lighting On
- 
+ 			
             CGPROGRAM
             #pragma glsl_no_auto_normalization
             #pragma vertex vert
             #pragma fragment frag
 			#pragma multi_compile FOV_SCALING_OFF FOV_SCALING_ON
- 
+ 			
             #include "UnityCG.cginc"
- 
+ 			
             sampler2D _MainTex;
             float4 _MainTex_ST;
             float4 _Color;
+            float4 _InnerColor;
             float _LineWidth;
             float _LineScale;
             float _LightSaberFactor;
 			float _CAMERA_FOV = 60.0f;
- 
+ 			
             struct a2v
             {
                 float4 vertex : POSITION;
@@ -57,13 +65,13 @@ Shader "VolumetricLine/VolumetricLineAdditive" {
                 float4 texcoord : TEXCOORD0;
  				float2 texcoord1 : TEXCOORD1;
             }; 
- 
+ 			
             struct v2f
             {
                 float4 pos : POSITION;
                 float2 uv : TEXCOORD0;
             };
- 
+ 			
             v2f vert (a2v v)
             {
                 v2f o;
@@ -83,23 +91,24 @@ Shader "VolumetricLine/VolumetricLineAdditive" {
 				o.pos = vMVP;
                 return o;
             }
- 
+ 			
             float4 frag(v2f i) : COLOR
             {
                 float4 tx = tex2D (_MainTex, i.uv);
-                                
+
                 if (tx.a > _LightSaberFactor)
                 {
-                	return float4(1.0, 1.0, 1.0, tx.a);
+                	return tx * _InnerColor;
                 }
                 else 
                 {
                 	return tx * _Color; 
                 }
             }
- 
+ 			
             ENDCG
         }
     }
+
     FallBack "Diffuse"
 }
