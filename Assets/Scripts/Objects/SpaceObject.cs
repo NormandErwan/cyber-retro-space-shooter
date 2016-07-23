@@ -5,8 +5,7 @@ using System.Collections.Generic;
 
 public abstract class SpaceObject : MonoBehaviour {
 
-	public LifeShieldManager lifeShieldManager;
-
+	protected LifeShieldManager lifeShieldManager;
 	protected ScoreManager scoreManager;
 	protected Rigidbody rigidBody;
 
@@ -14,6 +13,7 @@ public abstract class SpaceObject : MonoBehaviour {
 	private UnityEvent lifeEvents;
 
 	protected virtual void Awake () {
+		lifeShieldManager = GetComponent<LifeShieldManager> ();
 		rigidBody = GetComponent<Rigidbody> ();
 
 		lifeShieldManager.OnLifeShieldUpdated += OnLifeShieldUpdated;

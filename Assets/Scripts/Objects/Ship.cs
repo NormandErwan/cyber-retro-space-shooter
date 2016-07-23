@@ -5,18 +5,23 @@ using System.Collections;
 
 public abstract class Ship : SpaceObject {
 
-	public WeaponManager weapon;
-	public EngineManager engine;
+	protected WeaponManager weapon;
+	protected EngineManager engine;
 
 	private UnityEvent engineEvents;
 
 	protected override void Awake () {
 		base.Awake ();
+
+		weapon = GetComponent<WeaponManager> ();
+		engine = GetComponent<EngineManager> ();
+
 		engine.OnSpeedUpdated += OnSpeedUpdated;
 	}
 
 	protected override void Start () {
 		base.Start ();
+
 		OnSpeedUpdated (); // Init the EngineController info in the HUD
 	}
 
