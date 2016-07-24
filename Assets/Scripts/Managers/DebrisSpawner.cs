@@ -54,18 +54,17 @@ public class DebrisSpawner : MonoBehaviour {
 	void InstantiateDebris () {
 		// Create the parent object of the generated debris
 		GameObject debrisList = new GameObject ("DebrisList");
-		debrisList.transform.localScale = Vector3.one;
 		debrisList.transform.parent = this.transform;
 
 		// Instantiate the debris
 		foreach (Vector3 spawnBoxCenter in spawnBoxGrid) {
 			int randomDebrisIndex = Random.Range (0, debris.Length-1);
-
 			GameObject deb = Instantiate<GameObject> (debris[randomDebrisIndex]);
-			deb.transform.SetParent (debrisList.transform);
+
+			deb.transform.parent = debrisList.transform;
 			deb.GetComponent<DebrisController> ().ConfigurateDebris(debrisVelocity);
 
-			Vector3 randomPositionInsideSpawnBox = (spawnBoxSize - deb.transform.lossyScale) / 2; // Assume the debris' scale is smaller than the box' scale
+			Vector3 randomPositionInsideSpawnBox = spawnBoxSize / 2 - deb.transform.lossyScale; // Assume the debris' scale is smaller than the box' scale
 			deb.transform.position = spawnBoxCenter + Vector3.Scale(Random.insideUnitSphere, randomPositionInsideSpawnBox);
 		}
 	}
