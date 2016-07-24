@@ -15,7 +15,7 @@ public class WorldBorders : Borders {
 	void Start () {
 		ConfigurateBorders ();
 		upperWorldBorders.ConfigurateBorders (transform.localScale, bordersMarginPercentage);
-		//worldBorderGrid.SetupBorders (bordersMarginPercentage);
+		worldBorderGrid.GenerateBorderGrids ();
 	}
 
 	/*

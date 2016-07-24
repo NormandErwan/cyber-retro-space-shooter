@@ -108,11 +108,7 @@ namespace VolumetricLines
 		public Vector3 StartPos
 		{
 			get { return m_startPos; }
-			set 
-			{ 
-				m_startPos = value; 
-				SetStartAndEndPoints(m_startPos, m_endPos);
-			}
+			set { SetStartAndEndPoints(value, m_endPos); }
 		}
 
 		/// <summary>
@@ -122,11 +118,7 @@ namespace VolumetricLines
 		public Vector3 EndPos 
 		{
 			get { return m_endPos; }
-			set 
-			{
-				m_endPos = value; 
-				SetStartAndEndPoints(m_startPos, m_endPos);
-			}
+			set { SetStartAndEndPoints(m_startPos, value); }
 		}
 
 		/// <summary>
@@ -170,29 +162,32 @@ namespace VolumetricLines
 		/// </summary>
 		public void SetStartAndEndPoints(Vector3 startPoint, Vector3 endPoint)
 		{
+			m_startPos = startPoint;
+			m_endPos = endPoint;
+
 			Vector3[] vertexPositions = {
-				startPoint,
-				startPoint,
-				startPoint,
-				startPoint,
-				endPoint,
-				endPoint,
-				endPoint,
-				endPoint,
+				m_startPos,
+				m_startPos,
+				m_startPos,
+				m_startPos,
+				m_endPos,
+				m_endPos,
+				m_endPos,
+				m_endPos,
 			};
-			
+
 			Vector3[] other = {
-				endPoint,
-				endPoint,
-				endPoint,
-				endPoint,
-				startPoint,
-				startPoint,
-				startPoint,
-				startPoint,
+				m_endPos,
+				m_endPos,
+				m_endPos,
+				m_endPos,
+				m_startPos,
+				m_startPos,
+				m_startPos,
+				m_startPos,
 			};
 			
-			var mesh = GetComponent<MeshFilter>().sharedMesh;
+			var mesh = GetComponent<MeshFilter>().mesh;
 			if (null != mesh)
 			{
 				mesh.vertices = vertexPositions;

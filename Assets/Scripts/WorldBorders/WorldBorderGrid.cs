@@ -1,74 +1,63 @@
 ﻿using UnityEngine;
 using System.Collections;
+using VolumetricLines;
 
 public class WorldBorderGrid : MonoBehaviour {
 
-	public RenderTexture cameraBorderTextureModel;
-	public LayerMask cameraBorderLayerMask;
+	public int gridLineSpaceSize;
+	public GameObject BorderGridLine;
 
-	private float worldBordersMarginPercentage;
-
-	class Border {
+	class BorderGridDefinition {
 		public string name;
-		public Vector3 planeScale, planePosition, cameraRotation;
-		public int cameraOrthographicSizeParentLocalScaleIndex, camerafarClipPlaneParentLocalScaleIndex;
+		public Vector3 localPosition;
+		public Quaternion localRotation;
 
-		public Border(string name, Vector3 planeScale, Vector3 planePosition, Vector3 cameraRotation,
-			int cameraOrthographicSizeParentLocalScaleIndex, int camerafarClipPlaneParentLocalScaleIndex) {
+		public BorderGridDefinition(string name, Vector3 gridPosition, Vector3 gridRotation) 
+		{
 			this.name = name;
-			this.planeScale = planeScale;
-			this.planePosition = planePosition;
-			this.cameraRotation = cameraRotation;
-			this.cameraOrthographicSizeParentLocalScaleIndex = cameraOrthographicSizeParentLocalScaleIndex;
-			this.camerafarClipPlaneParentLocalScaleIndex = camerafarClipPlaneParentLocalScaleIndex;
+			this.localPosition = gridPosition;
+			this.localRotation = Quaternion.Euler(gridRotation);
 		}
 	}
-	Border[] borderDefinitions = new Border[] {
-		new Border("Up", new Vector3 (1f, 1f, 0.001f), new Vector3(0f, 0f, 0.5f), new Vector3(0f, 0f, 180f), 0, 2),
-		new Border("Down", new Vector3 (1f, 1f, 0.001f), new Vector3(0f, 0f, -0.5f), new Vector3(0f, 180f, 0f), 0, 2),
-		new Border("Top", new Vector3 (1f, 0.001f, 1f), new Vector3(0f, 0.5f, 0f), new Vector3(-90f, 180f, 0f), 2, 1),
-		new Border("Bottom", new Vector3 (1f, 0.001f, 1f), new Vector3(0f, -0.5f, 0f), new Vector3(90f, 180f, 0f), 2, 1),
-		new Border("Left", new Vector3 (0.001f, 1f, 1f), new Vector3(0.5f, 0f, 0f), new Vector3(0f, 90f, 0f), 1, 0),
-		new Border("Right", new Vector3 (0.001f, 1f, 1f), new Vector3(-0.5f, 0f, 0f), new Vector3(0f, -90f, 0f), 1, 0)
+	BorderGridDefinition[] borderGridDefinitions = new BorderGridDefinition[] {
+		new BorderGridDefinition("Front grid", new Vector3(0f, 0f, 0.5f), new Vector3(0f, 180f, 0f)),
+		new BorderGridDefinition("Behind grid", new Vector3(0f, 0f, -0.5f), new Vector3(0f, 0f, 0f)),
+		new BorderGridDefinition("Top grid", new Vector3(0f, 0.5f, 0f), new Vector3(90f, 0f, 0f)),
+		new BorderGridDefinition("Bottom grid", new Vector3(0f, -0.5f, 0f), new Vector3(-90f, 0f, 0f)),
+		new BorderGridDefinition("Right grid", new Vector3(0.5f, 0f, 0f), new Vector3(0f, -90f, 0f)),
+		new BorderGridDefinition("Left grid", new Vector3(-0.5f, 0f, 0f), new Vector3(0f, 90f, 0f))
 	};
 
-	/*
-	 * Setup each border and each camera of the box.
-	 */
-	public void SetupBorders (float borderMarginsPercentage) {
-		GameObject cameraModel = new GameObject ();
-		cameraModel.AddComponent<Camera> ();
-		cameraModel.GetComponent<Camera> ().orthographic = true;
-		cameraModel.GetComponent<Camera> ().aspect = 1f;
-		cameraModel.GetComponent<Camera> ().nearClipPlane = 0f;
-		cameraModel.GetComponent<Camera> ().cullingMask = cameraBorderLayerMask;
+	public void GenerateBorderGrids () {
+		foreach (BorderGridDefinition borderGridDefinition in borderGridDefinitions) {
+			GameObject borderGrid = new GameObject ();
+			borderGrid.name = borderGridDefinition.name;
 
-		GameObject planeModel = GameObject.CreatePrimitive (PrimitiveType.Cube);
-		planeModel.GetComponent<Collider> ().enabled = false;
+			borderGrid.transform.parent = this.transform;
+			borderGrid.transform.localPosition = borderGridDefinition.localPosition;
+			borderGrid.transform.localRotation = borderGridDefinition.localRotation;
+			borderGrid.transform.localScale = Vector3.one;
 
-		foreach (Border border in borderDefinitions) {
-			RenderTexture targetTexture = Instantiate<RenderTexture> (cameraBorderTextureModel);
-			Material targetMaterial = new Material (Shader.Find ("Standard"));
-			targetMaterial.mainTexture = targetTexture;
-
-			GameObject camera = Instantiate<GameObject>  (cameraModel);
-			camera.name = border.name + " Camera";
-			camera.transform.SetParent (this.transform);
-			camera.transform.localRotation = Quaternion.Euler (border.cameraRotation);
-			camera.transform.localPosition = -border.planePosition * borderMarginsPercentage;
-			camera.GetComponent<Camera> ().orthographicSize = transform.localScale[border.cameraOrthographicSizeParentLocalScaleIndex] / 2 * borderMarginsPercentage;
-			camera.GetComponent<Camera> ().farClipPlane = transform.localScale[border.camerafarClipPlaneParentLocalScaleIndex] * (borderMarginsPercentage*.99f);
-			camera.GetComponent<Camera> ().targetTexture = targetTexture;
-
-			GameObject plane = Instantiate<GameObject> (planeModel);
-			plane.name = border.name;
-			plane.transform.SetParent (this.transform);
-			plane.transform.localScale = border.planeScale * borderMarginsPercentage;
-			plane.transform.localPosition = border.planePosition * borderMarginsPercentage;
-			plane.GetComponent<MeshRenderer> ().material = targetMaterial;
+			GenerateBorderGridLines (borderGrid, Quaternion.Euler (90f, 0f, 0f), 0, 1);
+			GenerateBorderGridLines (borderGrid, Quaternion.Euler (0f, 90f, 0f), 1, 0);
 		}
+	}
 
-		Destroy (cameraModel);
-		Destroy (planeModel);
+	void GenerateBorderGridLines(GameObject borderGrid, Quaternion lineOrientation, 
+		int borderGridTransformIndexLength, int borderGridTransformIndexLineLength) 
+	{
+		float gridLineLocalSpaceSize = gridLineSpaceSize / this.transform.lossyScale [borderGridTransformIndexLength];
+		for (float i = -0.5f; i <= 0.5f; i = i + gridLineLocalSpaceSize) {
+			GameObject borderGridLineVertical = Instantiate (BorderGridLine);
+			borderGridLineVertical.transform.parent = borderGrid.transform;
+
+			Vector3 borderGridLineLocalPosition = Vector3.zero;
+			borderGridLineLocalPosition [borderGridTransformIndexLength] += i;
+			borderGridLineVertical.transform.localPosition = borderGridLineLocalPosition;
+			borderGridLineVertical.transform.localRotation = lineOrientation;
+
+			Vector3 borderGridLineHalfLength = new Vector3 (0f, 0f, this.transform.lossyScale [borderGridTransformIndexLineLength]) / 2;
+			borderGridLineVertical.GetComponent<VolumetricLineBehavior> ().SetStartAndEndPoints (-borderGridLineHalfLength, borderGridLineHalfLength);
+		}
 	}
 }
