@@ -20,6 +20,10 @@ public class DebrisController : SpaceObject {
 	public void ConfigurateDebris (Vector3 velocity) {
 		Rigidbody rigidbody = GetComponent<Rigidbody> ();
 
+		// Choose a random model from among the children
+		Transform childrenModel = transform.GetChild(Random.Range(0, transform.childCount-1));
+		childrenModel.gameObject.SetActive (true);
+
 		// Random scale
 		Transform parent = transform.parent;
 		transform.parent = null;
