@@ -5,6 +5,7 @@ public class WorldBorders : Borders {
 
 	public float bordersMarginPercentage;
 	public UpperWorldBorders upperWorldBorders;
+	public Animator playerHUDAnimator;
 
 	private WorldBorderGrid worldBorderGrid;
 
@@ -32,6 +33,7 @@ public class WorldBorders : Borders {
 	void OnTriggerExit (Collider other) {
 		if (Utilities.IsInLayerMask (other.gameObject.layer, constrainedLayers)) {
 			TranslateToOtherSide (transform, other.gameObject, bordersMin, bordersMax);
+			playerHUDAnimator.SetTrigger ("PlayerTouchWorldBorderGrid");
 		}
 	}
 }
