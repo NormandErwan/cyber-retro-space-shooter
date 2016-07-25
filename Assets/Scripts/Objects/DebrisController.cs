@@ -12,8 +12,6 @@ public class DebrisController : SpaceObject {
 	public float maxRandomTumble;
 
 	public List<GameObject> models;
-	public GameObject dieExplosionPrefab;
-	public float explosionTime = 1f;
 
 	// The player scores points when he/she destroys the debris.
 	public int scoreValue = 1;
@@ -28,8 +26,8 @@ public class DebrisController : SpaceObject {
 		Rigidbody rigidbody = GetComponent<Rigidbody> ();
 
 		// Choose a random model
-		int modelIndex = Random.Range(0, models.Count);
-		GetComponent<MeshFilter> ().mesh = models[modelIndex].GetComponent<MeshFilter> ().sharedMesh;
+		GameObject model = models [Random.Range(0, models.Count)];
+		transform.FindChild("Model").gameObject.GetComponent<MeshFilter> ().mesh = model.GetComponent<MeshFilter> ().sharedMesh;
 
 		// Random scale
 		Transform parent = transform.parent;
@@ -61,24 +59,11 @@ public class DebrisController : SpaceObject {
 	protected override void OnLifeShieldUpdated () {
 		if (lifeShieldManager.LifePoints <= LifeShieldManager.MIN_LIFE_POINTS) {
 			scoreManager.Score += scoreValue;
-			StartCoroutine ("Die");
+
+			System.Action<GameObject> explodeCallback = (GameObject explosion) => {
+				Destroy (gameObject);
+			};
+			StartCoroutine (explosionManager.Explode (explodeCallback));
 		}
-	}
-
-	/*
-	 * Instantiate the explosion, hide the model and destroy the object after a delay.
-	 */
-	IEnumerator Die () {
-		GameObject explosion = (GameObject)Instantiate (dieExplosionPrefab, transform.position, transform.rotation);
-		explosion.transform.parent = this.transform;
-		explosion.transform.localScale = Vector3.one;
-
-		GetComponent<SphereCollider> ().enabled = false;
-		GetComponent<MeshRenderer> ().enabled = false;
-
-		yield return new WaitForSeconds(explosionTime);
-		Destroy (gameObject);
-
-		yield return null;
 	}
 }

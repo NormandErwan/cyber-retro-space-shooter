@@ -8,12 +8,14 @@ public abstract class SpaceObject : MonoBehaviour {
 	protected LifeShieldManager lifeShieldManager;
 	protected ScoreManager scoreManager;
 	protected Rigidbody rigidBody;
+	protected ExplosionManager explosionManager;
 
 	private float damageFactor = 0.01f;
 	private UnityEvent lifeEvents;
 
 	protected virtual void Awake () {
 		lifeShieldManager = GetComponent<LifeShieldManager> ();
+		explosionManager = GetComponent<ExplosionManager> ();
 		rigidBody = GetComponent<Rigidbody> ();
 
 		lifeShieldManager.OnLifeShieldUpdated += OnLifeShieldUpdated;

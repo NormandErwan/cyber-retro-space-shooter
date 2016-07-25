@@ -63,27 +63,13 @@ public class PlayerController : Ship {
 		playerHUDManager.UpdateHUD ();
 
 		if (lifeShieldManager.LifePoints <= LifeShieldManager.MIN_LIFE_POINTS) {
-			StartCoroutine ("Die");
+			System.Action<GameObject> explodeCallback = (GameObject explosion) => {
+				Destroy (explosion);
+			};
+			StartCoroutine (explosionManager.Explode (explodeCallback));
+
+			gameOverManager.GameOver ();
 		}
-	}
-
-	/*
-	 * Instantiate the explosion, hide the model and trigger the game over.
-	 */
-	IEnumerator Die () {
-		GameObject explosion = (GameObject)Instantiate (dieExplosionPrefab, transform.position, transform.rotation);
-		explosion.transform.parent = this.transform;
-		explosion.transform.localScale = Vector3.one;
-
-		GetComponent<BoxCollider> ().enabled = false;
-		transform.FindChild("PlayerModel").gameObject.SetActive(false);
-
-		gameOverManager.GameOver ();
-
-		yield return new WaitForSeconds(explosionTime);
-		explosion.SetActive(false);
-
-		yield return null;
 	}
 
 	/*

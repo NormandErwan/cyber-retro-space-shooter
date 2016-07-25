@@ -7,10 +7,12 @@ public class MunitionController : MonoBehaviour {
 	public float fireVelocity = 5f;
 	public float destroyBelowVelocity = 1f;
 
-	public GameObject explosionPrefab;
-	public float explosionTime = 1f;
-
+	private ExplosionManager explosionManager;
 	private bool isExploding = false;
+
+	void Awake () {
+		explosionManager = GetComponent<ExplosionManager> ();
+	}
 
 	void FixedUpdate () {
 		DestroyBelowVelocity ();
@@ -37,21 +39,9 @@ public class MunitionController : MonoBehaviour {
 		}
 
 		isExploding = true;
-		StartCoroutine ("Explosion");
-	}
-
-	IEnumerator Explosion () {
-		GetComponent<Rigidbody> ().drag = 10f;
-		GetComponent<Collider> ().enabled = false;
-		transform.FindChild("Model").gameObject.SetActive(false);
-
-		GameObject explosion = (GameObject)Instantiate (explosionPrefab, transform.position, transform.rotation);
-		explosion.transform.parent = this.transform;
-		explosion.transform.localScale = Vector3.one;
-
-		yield return new WaitForSeconds(explosionTime);
-		Destroy (gameObject);
-
-		yield return null;
+		System.Action<GameObject> explodeCallback = (GameObject explosion) => {
+			Destroy (gameObject);
+		};
+		StartCoroutine (explosionManager.Explode(explodeCallback));
 	}
 }
