@@ -28,15 +28,8 @@ public class DebrisController : SpaceObject {
 		Rigidbody rigidbody = GetComponent<Rigidbody> ();
 
 		// Choose a random model
-		int activeModelIndex = Random.Range(0, models.Count);
-		for (int i = 0; i < models.Count; i++) {
-			if ((i == activeModelIndex)) {
-				activeModel = models [i];
-				activeModel.SetActive (true);
-			} else {
-				models[i].SetActive (false);
-			}
-		}
+		int modelIndex = Random.Range(0, models.Count);
+		GetComponent<MeshFilter> ().mesh = models[modelIndex].GetComponent<MeshFilter> ().sharedMesh;
 
 		// Random scale
 		Transform parent = transform.parent;
@@ -81,7 +74,7 @@ public class DebrisController : SpaceObject {
 		explosion.transform.localScale = Vector3.one;
 
 		GetComponent<SphereCollider> ().enabled = false;
-		activeModel.SetActive (false);
+		GetComponent<MeshRenderer> ().enabled = false;
 
 		yield return new WaitForSeconds(explosionTime);
 		Destroy (gameObject);
