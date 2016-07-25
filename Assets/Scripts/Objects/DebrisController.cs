@@ -10,10 +10,15 @@ public class DebrisController : SpaceObject {
 	public float scaleAxisVariability; // Allow non-uniform scale along axis.
 	public float velocityVariablity;
 	public float maxRandomTumble;
+
 	public List<GameObject> models;
+	public GameObject dieExplosionPrefab;
+	public float explosionTime = 1f;
 
 	// The player scores points when he/she destroys the debris.
 	public int scoreValue = 1;
+
+	private GameObject activeModel;
 
 	/*
 	 * Compute a random scale, random orientation, a mass, life points and a random velocity.
@@ -25,7 +30,12 @@ public class DebrisController : SpaceObject {
 		// Choose a random model
 		int activeModelIndex = Random.Range(0, models.Count);
 		for (int i = 0; i < models.Count; i++) {
-			models[i].SetActive ((i == activeModelIndex) ? true : false);
+			if ((i == activeModelIndex)) {
+				activeModel = models [i];
+				activeModel.SetActive (true);
+			} else {
+				models[i].SetActive (false);
+			}
 		}
 
 		// Random scale
@@ -42,10 +52,10 @@ public class DebrisController : SpaceObject {
 		transform.rotation = Random.rotation;
 
 		// Random life points
-		lifeShieldManager.LifePoints *= Mathf.Max(Mathf.RoundToInt(randomScale.magnitude), lifeShieldManager.LifePoints);
+		lifeShieldManager.LifePoints *= Mathf.Max(Mathf.RoundToInt(transform.localScale.magnitude), lifeShieldManager.LifePoints);
 
 		// Random mass
-		rigidbody.mass *= randomScale.magnitude;
+		rigidbody.mass *= transform.localScale.magnitude;
 
 		// Random velocity
 		rigidbody.AddForce (velocity + Random.insideUnitSphere * velocityVariablity, ForceMode.VelocityChange);
@@ -56,9 +66,26 @@ public class DebrisController : SpaceObject {
 	 * Update score and destroy when life points drops to zero.
 	 */
 	protected override void OnLifeShieldUpdated () {
-		if (lifeShieldManager.LifePoints == LifeShieldManager.MIN_LIFE_POINTS) {
+		if (lifeShieldManager.LifePoints <= LifeShieldManager.MIN_LIFE_POINTS) {
 			scoreManager.Score += scoreValue;
-			Destroy (gameObject);
+			StartCoroutine ("Die");
 		}
+	}
+
+	/*
+	 * Instantiate the explosion, hide the model and destroy the object after a delay.
+	 */
+	IEnumerator Die () {
+		GameObject explosion = (GameObject)Instantiate (dieExplosionPrefab, transform.position, transform.rotation);
+		explosion.transform.parent = this.transform;
+		explosion.transform.localScale = Vector3.one;
+
+		GetComponent<SphereCollider> ().enabled = false;
+		activeModel.SetActive (false);
+
+		yield return new WaitForSeconds(explosionTime);
+		Destroy (gameObject);
+
+		yield return null;
 	}
 }
