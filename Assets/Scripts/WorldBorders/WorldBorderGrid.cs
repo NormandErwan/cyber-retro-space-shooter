@@ -73,12 +73,6 @@ public class WorldBorderGrid : MonoBehaviour {
 			line.transform.localPosition = lineLocalPosition;
 			line.transform.localRotation = lineLocalRotation;
 
-			// Because the z scale is the component of the vector that has the influence on the line length,
-			// adjust it in order to make the oriented line taking a lossy scale of one.
-			Vector3 lineLocalScale = line.transform.localScale;
-			lineLocalScale[2] = line.transform.localScale[worldScaleIndexLineLength];
-			line.transform.localScale = lineLocalScale;
-
 			// Adjust the line length in the shader, considering the z scale is one.
 			Vector3 lineHalfLength = new Vector3 (0f, 0f, this.transform.lossyScale [worldScaleIndexLineLength]) / 2;
 			line.GetComponent<VolumetricLineBehavior> ().SetStartAndEndPoints (-lineHalfLength, lineHalfLength);
