@@ -7,10 +7,13 @@ public class WorldBorderGrid : MonoBehaviour {
 	public int gridLineSpaceSize;
 	public GameObject BorderGridLine;
 
+	/*
+	 * Contains the blueprints to generate the border grids.
+	 */
 	class BorderGridDefinition {
 		public string name;
 		public Vector3 localPosition;
-		public Quaternion localRotation;
+		public Quaternion rotation;
 		public int worldScaleIndexGridLength, worldScaleIndexLineLength;
 
 		public BorderGridDefinition(string name, Vector3 gridPosition, Vector3 gridRotation,
@@ -18,7 +21,7 @@ public class WorldBorderGrid : MonoBehaviour {
 		{
 			this.name = name;
 			this.localPosition = gridPosition;
-			this.localRotation = Quaternion.Euler(gridRotation);
+			this.rotation = Quaternion.Euler(gridRotation);
 			this.worldScaleIndexGridLength = worldScaleIndexGridLength;
 			this.worldScaleIndexLineLength = worldScaleIndexLineLength;
 		}
@@ -26,23 +29,24 @@ public class WorldBorderGrid : MonoBehaviour {
 	BorderGridDefinition[] borderGridDefinitions = new BorderGridDefinition[] {
 		new BorderGridDefinition("Front grid", new Vector3(0f, 0f, 0.5f), new Vector3(0f, 180f, 0f), 0, 1),
 		new BorderGridDefinition("Behind grid", new Vector3(0f, 0f, -0.5f), new Vector3(0f, 0f, 0f), 0, 1),
-		new BorderGridDefinition("Top grid", new Vector3(0f, 0.5f, 0f), new Vector3(90f, 0f, 0f), 0, 1),
-		new BorderGridDefinition("Bottom grid", new Vector3(0f, -0.5f, 0f), new Vector3(-90f, 0f, 0f), 0, 1),
-		new BorderGridDefinition("Right grid", new Vector3(0.5f, 0f, 0f), new Vector3(0f, -90f, 0f), 0, 1),
-		new BorderGridDefinition("Left grid", new Vector3(-0.5f, 0f, 0f), new Vector3(0f, 90f, 0f), 0, 1)
+		new BorderGridDefinition("Top grid", new Vector3(0f, 0.5f, 0f), new Vector3(90f, 0f, 0f), 0, 2),
+		new BorderGridDefinition("Bottom grid", new Vector3(0f, -0.5f, 0f), new Vector3(-90f, 0f, 0f), 0, 2),
+		new BorderGridDefinition("Right grid", new Vector3(0.5f, 0f, 0f), new Vector3(0f, -90f, 0f), 2, 1),
+		new BorderGridDefinition("Left grid", new Vector3(-0.5f, 0f, 0f), new Vector3(0f, 90f, 0f), 2, 1)
 	};
 
+	/*
+	 * Generate each border grid.
+	 */
 	public void GenerateBorderGrids () {
-		// Spawn each grid.
 		foreach (BorderGridDefinition borderGridDefinition in borderGridDefinitions) {
 			GameObject borderGrid = new GameObject ();
 			borderGrid.name = borderGridDefinition.name;
 
 			// Position and orient the grid.
+			borderGrid.transform.rotation = borderGridDefinition.rotation; // NOTE: Important to adjust the rotation before set the parent to have the reset good scale
 			borderGrid.transform.parent = this.transform;
 			borderGrid.transform.localPosition = borderGridDefinition.localPosition;
-			borderGrid.transform.localRotation = borderGridDefinition.localRotation;
-			borderGrid.transform.localScale = Vector3.one;
 
 			GenerateBorderGridLines (borderGrid, borderGridDefinition.worldScaleIndexGridLength, borderGridDefinition.worldScaleIndexLineLength, 
 				Quaternion.Euler (90f, 0f, 0f), 0); // Spawn vertical lines along the grid.
@@ -51,12 +55,15 @@ public class WorldBorderGrid : MonoBehaviour {
 		}
 	}
 
+	/*
+	 * Generate the lines of a border grid along an axis.
+	 */
 	void GenerateBorderGridLines(GameObject grid, int worldScaleIndexGridLength, int worldScaleIndexLineLength,
 		Quaternion lineLocalRotation, int lineLocalPositionIndex) 
 	{
 		// Spawn a new line on each gridLineSpaceSize along the worldScaleIndexGridLength axis.
-		float gridLineLocalSpaceSize = gridLineSpaceSize / this.transform.lossyScale [worldScaleIndexGridLength];
-		for (float i = -0.5f; i <= 0.5f; i = i + gridLineLocalSpaceSize) {
+		float gridHalfLength = this.transform.lossyScale [worldScaleIndexGridLength] / 2;
+		for (float i = -gridHalfLength; i <= gridHalfLength; i += gridLineSpaceSize) {
 			GameObject line = Instantiate (BorderGridLine);
 			line.transform.parent = grid.transform;
 
