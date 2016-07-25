@@ -7,6 +7,11 @@ public class MunitionController : MonoBehaviour {
 	public float fireVelocity = 5f;
 	public float destroyBelowVelocity = 1f;
 
+	public GameObject explosionPrefab;
+	public float explosionTime = 1f;
+
+	private bool isExploding = false;
+
 	void FixedUpdate () {
 		DestroyBelowVelocity ();
 	}
@@ -16,7 +21,7 @@ public class MunitionController : MonoBehaviour {
 	 */
 	void DestroyBelowVelocity () {
 		float velocityMagnitude = gameObject.GetComponent<Rigidbody> ().velocity.magnitude;
-		if (velocityMagnitude < destroyBelowVelocity 
+		if (!isExploding && velocityMagnitude < destroyBelowVelocity 
 			&& velocityMagnitude != 0) { // Don't destroy it at it's creation, before the force has been applied by the weapon
 			Destroy (gameObject);
 		}
@@ -30,6 +35,23 @@ public class MunitionController : MonoBehaviour {
 		if (otherLife != null) {
 			otherLife.Hit (damageFactor);
 		}
+
+		isExploding = true;
+		StartCoroutine ("Explosion");
+	}
+
+	IEnumerator Explosion () {
+		GetComponent<Rigidbody> ().drag = 10f;
+		GetComponent<Collider> ().enabled = false;
+		transform.FindChild("Model").gameObject.SetActive(false);
+
+		GameObject explosion = (GameObject)Instantiate (explosionPrefab, transform.position, transform.rotation);
+		explosion.transform.parent = this.transform;
+		explosion.transform.localScale = Vector3.one;
+
+		yield return new WaitForSeconds(explosionTime);
 		Destroy (gameObject);
+
+		yield return null;
 	}
 }
