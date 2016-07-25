@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class DebrisController : SpaceObject {
 
@@ -9,6 +10,7 @@ public class DebrisController : SpaceObject {
 	public float scaleAxisVariability; // Allow non-uniform scale along axis.
 	public float velocityVariablity;
 	public float maxRandomTumble;
+	public List<GameObject> models;
 
 	// The player scores points when he/she destroys the debris.
 	public int scoreValue = 1;
@@ -20,9 +22,11 @@ public class DebrisController : SpaceObject {
 	public void ConfigurateDebris (Vector3 velocity) {
 		Rigidbody rigidbody = GetComponent<Rigidbody> ();
 
-		// Choose a random model from among the children
-		Transform childrenModel = transform.GetChild(Random.Range(0, transform.childCount-1));
-		childrenModel.gameObject.SetActive (true);
+		// Choose a random model
+		int activeModelIndex = Random.Range(0, models.Count);
+		for (int i = 0; i < models.Count; i++) {
+			models[i].SetActive ((i == activeModelIndex) ? true : false);
+		}
 
 		// Random scale
 		Transform parent = transform.parent;
