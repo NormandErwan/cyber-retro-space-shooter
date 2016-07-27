@@ -8,9 +8,11 @@ public class PlayerHUDManager : MonoBehaviour {
 	public UISliderText shieldUI;
 	public UISliderText engineUI;
 	public Slider engineShieldSlider;
+	public Text UItext;
 
 	private LifeShieldManager lifeShieldManager;
-	protected EngineManager engine;
+	private WeaponManager weapon;
+	private EngineManager engine;
 	private RectTransform shieldSliderRect, engineSliderRect;
 	private float engineShieldSliderRectHeight;
 	private float engineShieldSliderStep;
@@ -20,6 +22,7 @@ public class PlayerHUDManager : MonoBehaviour {
 
 	void Awake () {
 		lifeShieldManager = GetComponent<LifeShieldManager> ();
+		weapon = GetComponent<WeaponManager> ();
 		engine = GetComponent<EngineManager> ();
 	}
 
@@ -30,6 +33,36 @@ public class PlayerHUDManager : MonoBehaviour {
 
 		ConfigureHUD ();
 		AdjustEngineShield (engineShieldSlider.value); // Force a first update of the HUD
+	}
+
+	void Update () {
+		string text = "";
+
+		bool fire = false, adjustedEngineShield = false;
+		for (int i = 0; i < Input.touchCount; i++) {
+			Touch touch = Input.GetTouch (i);
+
+			text += i + "(" + touch.phase + " " + touch.deltaPosition + " " + touch.deltaTime + " " + touch.deltaPosition.magnitude / touch.deltaTime + " " +")" + " ";
+
+			if (!fire) {
+				if (touch.phase == TouchPhase.Began) {
+					weapon.DiscreteFire ();
+					fire = true;
+				} else if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary) {
+					weapon.ContinuousFire ();
+					fire = true;
+				}
+			}
+
+			if (!adjustedEngineShield) {
+				if (touch.phase == TouchPhase.Moved) {
+					float value = (touch.deltaPosition.y > 0f) ? engineShieldSlider.value++ : engineShieldSlider.value--;
+					AdjustEngineShield (value);
+					adjustedEngineShield = true;
+				}
+			}
+		}
+		UItext.text = text;
 	}
 
 	/*
@@ -73,10 +106,10 @@ public class PlayerHUDManager : MonoBehaviour {
 	/*
 	 * Distributes the power between the shield capacity and the engine's speed.
 	 */
-	public void AdjustEngineShield (float percentage) {
+	public void AdjustEngineShield (float engineShieldSliderValue) {
 		// Calculate the shield and engine slider percentages
-		float shieldCapacityPercentage = (engineShieldSlider.maxValue - percentage) * engineShieldSliderStep;
-		float speedPercentage = percentage * engineShieldSliderStep;
+		float shieldCapacityPercentage = (engineShieldSlider.maxValue - engineShieldSliderValue) * engineShieldSliderStep;
+		float speedPercentage = engineShieldSliderValue * engineShieldSliderStep;
 
 		// Adjust the slider heights
 		shieldSliderRect.sizeDelta = new Vector2 (engineSliderRect.sizeDelta.x, engineShieldSliderRectHeight * shieldCapacityPercentage / MAX_PERCENTAGE);
