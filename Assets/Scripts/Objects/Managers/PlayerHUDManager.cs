@@ -26,15 +26,6 @@ public class PlayerHUDManager : MonoBehaviour {
 		engine = GetComponent<EngineManager> ();
 	}
 
-	void Start () {
-		shieldSliderRect = shieldUI.slider.GetComponent<RectTransform> ();
-		engineSliderRect = engineUI.slider.GetComponent<RectTransform> ();
-		engineShieldSliderRectHeight = engineShieldSlider.GetComponent<RectTransform> ().rect.height;
-
-		ConfigureHUD ();
-		AdjustEngineShield (engineShieldSlider.value); // Force a first update of the HUD
-	}
-
 	void Update () {
 		string text = "";
 
@@ -68,7 +59,11 @@ public class PlayerHUDManager : MonoBehaviour {
 	/*
 	 * Initialize the player's HUD elements.
 	 */
-	void ConfigureHUD () {
+	public void ConfigureHUD () {
+		shieldSliderRect = shieldUI.slider.GetComponent<RectTransform> ();
+		engineSliderRect = engineUI.slider.GetComponent<RectTransform> ();
+		engineShieldSliderRectHeight = engineShieldSlider.GetComponent<RectTransform> ().rect.height;
+
 		healthUI.slider.minValue = LifeShieldManager.MIN_LIFE_POINTS;
 		healthUI.slider.maxValue = lifeShieldManager.lifeCapacity;
 
@@ -83,6 +78,9 @@ public class PlayerHUDManager : MonoBehaviour {
 		engineShieldSlider.minValue = MIN_PERCENTAGE;
 		engineShieldSlider.maxValue = Mathf.Round (MAX_PERCENTAGE * ENGINE_SHIELD_SLIDER_STEP_PERCENTAGE / engineShieldSliderRectHeight);
 		engineShieldSliderStep = MAX_PERCENTAGE / engineShieldSlider.maxValue;
+
+		AdjustEngineShield (engineShieldSlider.minValue); // Force a first update of the HUD
+		UpdateHUD ();
 	}
 
 	/*
@@ -107,6 +105,8 @@ public class PlayerHUDManager : MonoBehaviour {
 	 * Distributes the power between the shield capacity and the engine's speed.
 	 */
 	public void AdjustEngineShield (float engineShieldSliderValue) {
+		engineShieldSlider.value = engineShieldSliderValue;
+
 		// Calculate the shield and engine slider percentages
 		float shieldCapacityPercentage = (engineShieldSlider.maxValue - engineShieldSliderValue) * engineShieldSliderStep;
 		float speedPercentage = engineShieldSliderValue * engineShieldSliderStep;

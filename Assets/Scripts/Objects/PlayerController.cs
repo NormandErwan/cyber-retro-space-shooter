@@ -17,7 +17,7 @@ public class PlayerController : Ship {
 	protected GameOverManager gameOverManager;
 
 	private GvrHead gvrHead;
-	private bool activated = true, gameOver = false;
+	private bool activated = true;
 
 	//private Dictionary<GameObject, int> objectAvoidanceDic = new Dictionary<GameObject, int> ();
 
@@ -29,10 +29,28 @@ public class PlayerController : Ship {
 		gvrHead = GetComponent<GvrHead> ();
 	}
 
-	void Update () {
-		if (lifeShieldManager.LifePoints > LifeShieldManager.MIN_LIFE_POINTS) {
-			activated = false;
-		}
+	protected override void Start () {
+		base.Start ();
+
+		gvrHead.OnHeadUpdated += OnOrientationChanged;
+		playerHUDManager.ConfigureHUD ();
+	}
+
+	/*
+	 * Start the ship when the level launch.
+	 */
+	public void Launch () {
+		activated = true;
+		gvrHead.enabled = true;
+		playerHUDManager.ConfigureHUD ();
+	}
+
+	/*
+	 * Make the ship idle.
+	 */
+	public void Deactivate () {
+		activated = false;
+		gvrHead.enabled = false;
 	}
 
 	/*
@@ -68,8 +86,8 @@ public class PlayerController : Ship {
 	protected override void OnLifeShieldUpdated () {
 		playerHUDManager.UpdateHUD ();
 
-		if (!activated && gameOver) {
-			gameOver = true;
+		if (lifeShieldManager.LifePoints <= LifeShieldManager.MIN_LIFE_POINTS) {
+			activated = false;
 
 			System.Action<GameObject> explodeCallback = (GameObject explosion) => {
 				Destroy (explosion);
@@ -108,24 +126,5 @@ public class PlayerController : Ship {
 				//objectAvoidanceDic.Remove (other.gameObject);
 			}
 		}
-	}
-
-	/*
-	 * Start the ship when the level launch.
-	 */
-	public void Launch () {
-		activated = true;
-
-		gvrHead.enabled = true;
-		gvrHead.OnHeadUpdated += OnOrientationChanged;
-	}
-
-	/*
-	 * Make the ship idle.
-	 */
-	public void Deactivate () {
-		activated = false;
-
-		gvrHead.enabled = false;
 	}
 }

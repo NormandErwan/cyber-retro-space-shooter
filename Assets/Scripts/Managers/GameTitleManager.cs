@@ -6,6 +6,7 @@ public class GameTitleManager : MonoBehaviour {
 	public GameObject gameTitleCanvas;
 	public GameObject playerHUDCanvas;
 	public PlayerController player;
+	public Animator playerAnimator;
 	public float startGameTextDelay;
 
 	private Animator gameTitleAnimator;
@@ -49,6 +50,7 @@ public class GameTitleManager : MonoBehaviour {
 		// Get a tap anywhere on the screen=
 		if (Utilities.IsTapOnScreen()) {
 			gameTitleAnimator.SetTrigger ("LaunchLevel");
+			playerAnimator.SetTrigger ("LaunchLevel");
 		}
 	}
 
