@@ -16,6 +16,9 @@ public class PlayerController : Ship {
 	protected PlayerHUDManager playerHUDManager;
 	protected GameOverManager gameOverManager;
 
+	private GvrHead gvrHead;
+	private bool activated = true, gameOver = false;
+
 	//private Dictionary<GameObject, int> objectAvoidanceDic = new Dictionary<GameObject, int> ();
 
 	protected override void Awake () {
@@ -23,12 +26,13 @@ public class PlayerController : Ship {
 
 		playerHUDManager = GetComponent<PlayerHUDManager> ();
 		gameOverManager = GameObject.FindGameObjectWithTag ("GameOverManager").GetComponent<GameOverManager> ();
+		gvrHead = GetComponent<GvrHead> ();
 	}
 
-	protected override void Start () {
-		base.Start ();
-
-		GetComponent<GvrHead> ().OnHeadUpdated += OnOrientationChanged;
+	void Update () {
+		if (lifeShieldManager.LifePoints > LifeShieldManager.MIN_LIFE_POINTS) {
+			activated = false;
+		}
 	}
 
 	/*
@@ -44,14 +48,16 @@ public class PlayerController : Ship {
 	 * Keep the velocity vector aligned with the forward vector.
 	 */
 	void OnOrientationChanged (GameObject player) {
-		rigidBody.velocity = Quaternion.FromToRotation (rigidBody.velocity, transform.forward) * rigidBody.velocity;
+		if (activated) {
+			rigidBody.velocity = Quaternion.FromToRotation (rigidBody.velocity, transform.forward) * rigidBody.velocity;
+		}
 	}
 
 	/*
 	 * Move the player's ship.
 	 */
 	protected override void Move () {
-		if (lifeShieldManager.LifePoints > LifeShieldManager.MIN_LIFE_POINTS) {
+		if (activated) {
 			engine.Move ();
 		}
 	}
@@ -62,7 +68,9 @@ public class PlayerController : Ship {
 	protected override void OnLifeShieldUpdated () {
 		playerHUDManager.UpdateHUD ();
 
-		if (lifeShieldManager.LifePoints <= LifeShieldManager.MIN_LIFE_POINTS) {
+		if (!activated && gameOver) {
+			gameOver = true;
+
 			System.Action<GameObject> explodeCallback = (GameObject explosion) => {
 				Destroy (explosion);
 			};
@@ -93,12 +101,31 @@ public class PlayerController : Ship {
 	}*/
 
 	void OnTriggerExit (Collider other) {
-		if (lifeShieldManager.LifePoints > LifeShieldManager.MIN_LIFE_POINTS) {
+		if (activated) {
 			if (Utilities.IsInLayerMask (other.gameObject.layer, objectAvoidanceMask)) {
 				scoreManager.Score += objectAvoidanceFactorScore; 
 				//scoreManager.Score += objectAvoidanceDic [other.gameObject];
 				//objectAvoidanceDic.Remove (other.gameObject);
 			}
 		}
+	}
+
+	/*
+	 * Start the ship when the level launch.
+	 */
+	public void Launch () {
+		activated = true;
+
+		gvrHead.enabled = true;
+		gvrHead.OnHeadUpdated += OnOrientationChanged;
+	}
+
+	/*
+	 * Make the ship idle.
+	 */
+	public void Deactivate () {
+		activated = false;
+
+		gvrHead.enabled = false;
 	}
 }

@@ -29,7 +29,7 @@ public class GameOverManager : MonoBehaviour {
 			}
 
 			// Get a tap anywhere on the screen
-			if ((Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) || Input.GetKeyDown (KeyCode.Space)) {
+			if (Utilities.IsTapOnScreen()) {
 				RestartLevel ();
 			}
 		}

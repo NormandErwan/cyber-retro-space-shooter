@@ -9,4 +9,8 @@ public class Utilities {
 	public static bool IsInLayerMask(int layer, LayerMask layerMask) {
 		return layerMask == (layerMask | (1 << layer));
 	}
+
+	public static bool IsTapOnScreen () {
+		return (Input.touchCount > 0 && Input.GetTouch (0).phase == TouchPhase.Began) || Input.GetButton ("Fire1");
+	}
 }

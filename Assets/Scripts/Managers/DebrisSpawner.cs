@@ -11,7 +11,7 @@ public class DebrisSpawner : MonoBehaviour {
 
 	void Start () {
 		SetupSpawnGrid ();
-		InstantiateDebris ();
+		GenerateDebris ();
 	}
 
 	/*
@@ -51,7 +51,7 @@ public class DebrisSpawner : MonoBehaviour {
 	/*
 	 * Instantiate a debris along the grid in each spawn box.
 	 */
-	void InstantiateDebris () {
+	void GenerateDebris () {
 		// Create the parent object of the generated debris
 		GameObject debrisList = new GameObject ("DebrisList");
 		debrisList.transform.parent = this.transform;
